@@ -9,6 +9,7 @@
 #include <crypto/common.h>
 #include <crypto/ripemd160.h>
 #include <crypto/sha256.h>
+#include <crypto/sha512.h>
 #include <prevector.h>
 #include <serialize.h>
 #include <uint256.h>
@@ -38,6 +39,32 @@ public:
 
     CHash256& Reset() {
         sha.Reset();
+        return *this;
+    }
+};
+
+/** A hasher class for Bitcoin's 256-bit hash (SHA-256(SHA-512)). */
+class CHash256Ex {
+private:
+    CSHA256 sha256;
+    CSHA512 sha512;
+public:
+    static const size_t OUTPUT_SIZE = CSHA256::OUTPUT_SIZE;
+
+    void Finalize(unsigned char hash[OUTPUT_SIZE]) {
+        unsigned char buf[CSHA512::OUTPUT_SIZE];
+        sha512.Finalize(buf);
+        sha256.Reset().Write(buf, CSHA512::OUTPUT_SIZE).Finalize(hash);
+    }
+
+    CHash256Ex& Write(const unsigned char *data, size_t len) {
+        sha512.Write(data, len);
+        return *this;
+    }
+
+    CHash256Ex& Reset() {
+        sha256.Reset();
+        sha512.Reset();
         return *this;
     }
 };
@@ -156,6 +183,49 @@ public:
     }
 };
 
+/** A writer stream (for serialization) that computes a 256-bit hash. */
+class CHashWriterEx
+{
+private:
+    CHash256Ex ctx;
+
+    const int nType;
+    const int nVersion;
+public:
+
+    CHashWriterEx(int nTypeIn, int nVersionIn) : nType(nTypeIn), nVersion(nVersionIn) {}
+
+    int GetType() const { return nType; }
+    int GetVersion() const { return nVersion; }
+
+    void write(const char *pch, size_t size) {
+        ctx.Write((const unsigned char*)pch, size);
+    }
+
+    // invalidates the object
+    uint256 GetHash() {
+        uint256 result;
+        ctx.Finalize((unsigned char*)&result);
+        return result;
+    }
+
+    /**
+     * Returns the first 64 bits from the resulting hash.
+     */
+    inline uint64_t GetCheapHash() {
+        unsigned char result[CHash256::OUTPUT_SIZE];
+        ctx.Finalize(result);
+        return ReadLE64(result);
+    }
+
+    template<typename T>
+    CHashWriterEx& operator<<(const T& obj) {
+        // Serialize to this stream
+        ::Serialize(*this, obj);
+        return (*this);
+    }
+};
+
 /** Reads data from an underlying stream, while hashing the read data. */
 template<typename Source>
 class CHashVerifier : public CHashWriter
@@ -191,11 +261,55 @@ public:
     }
 };
 
+/** Reads data from an underlying stream, while hashing the read data. */
+template<typename Source>
+class CHashVerifierEx : public CHashWriterEx
+{
+private:
+    Source* source;
+
+public:
+    explicit CHashVerifierEx(Source* source_) : CHashWriterEx(source_->GetType(), source_->GetVersion()), source(source_) {}
+
+    void read(char* pch, size_t nSize)
+    {
+        source->read(pch, nSize);
+        this->write(pch, nSize);
+    }
+
+    void ignore(size_t nSize)
+    {
+        char data[1024];
+        while (nSize > 0) {
+            size_t now = std::min<size_t>(nSize, 1024);
+            read(data, now);
+            nSize -= now;
+        }
+    }
+
+    template<typename T>
+    CHashVerifierEx<Source>& operator>>(T&& obj)
+    {
+        // Unserialize from this stream
+        ::Unserialize(*this, obj);
+        return (*this);
+    }
+};
+
 /** Compute the 256-bit hash of an object's serialization. */
 template<typename T>
 uint256 SerializeHash(const T& obj, int nType=SER_GETHASH, int nVersion=PROTOCOL_VERSION)
 {
     CHashWriter ss(nType, nVersion);
+    ss << obj;
+    return ss.GetHash();
+}
+
+/** Compute the 256-bit hash of an object's serialization. */
+template<typename T>
+uint256 SerializeHashEx(const T& obj, int nType=SER_GETHASH, int nVersion=PROTOCOL_VERSION)
+{
+    CHashWriterEx ss(nType, nVersion);
     ss << obj;
     return ss.GetHash();
 }

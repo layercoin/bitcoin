@@ -1495,7 +1495,7 @@ static bool UndoReadFromDisk(CBlockUndo& blockundo, const CBlockIndex *pindex)
 
     // Read block
     uint256 hashChecksum;
-    CHashVerifier<CAutoFile> verifier(&filein); // We need a CHashVerifier as reserializing may lose data
+    CHashVerifierEx<CAutoFile> verifier(&filein); // We need a CHashVerifierEx as reserializing may lose data
     try {
         verifier << pindex->pprev->GetBlockHash();
         verifier >> blockundo;
