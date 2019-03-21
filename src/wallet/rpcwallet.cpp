@@ -162,7 +162,7 @@ static UniValue getnewaddress(const JSONRPCRequest& request)
                 "so payments received with the address will be associated with 'label'.\n",
                 {
                     {"label", RPCArg::Type::STR, /* default */ "\"\"", "The label name for the address to be linked to. It can also be set to the empty string \"\" to represent the default label. The label does not need to exist, it will be created if there is no label by the given name."},
-                    {"address_type", RPCArg::Type::STR, /* default */ "set by -addresstype", "The address type to use. Options are \"legacy\", \"p2sh-segwit\", and \"bech32\"."},
+                    {"address_type", RPCArg::Type::STR, /* default */ "set by -addresstype", "The address type to use. Options are \"p2sh-segwit\", and \"bech32\". \"legacy\" is deprecated."},
                 },
                 RPCResult{
             "\"address\"    (string) The new bitcoin address\n"
@@ -188,6 +188,9 @@ static UniValue getnewaddress(const JSONRPCRequest& request)
     if (!request.params[1].isNull()) {
         if (!ParseOutputType(request.params[1].get_str(), output_type)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", request.params[1].get_str()));
+        }
+        if (output_type == OutputType::LEGACY) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Discard address type '%s'", request.params[1].get_str()));
         }
     }
 

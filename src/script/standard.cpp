@@ -322,5 +322,5 @@ CScript GetScriptForWitness(const CScript& redeemscript)
 }
 
 bool IsValidDestination(const CTxDestination& dest) {
-    return dest.which() != 0;
+    return dest.which() > 2;
 }
