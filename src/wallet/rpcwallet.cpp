@@ -162,7 +162,7 @@ static UniValue getnewaddress(const JSONRPCRequest& request)
                 "so payments received with the address will be associated with 'label'.\n",
                 {
                     {"label", RPCArg::Type::STR, /* default */ "\"\"", "The label name for the address to be linked to. It can also be set to the empty string \"\" to represent the default label. The label does not need to exist, it will be created if there is no label by the given name."},
-                    {"address_type", RPCArg::Type::STR, /* default */ "set by -addresstype", "The address type to use. Options are \"p2sh-segwit\", and \"bech32\". \"legacy\" is deprecated."},
+                    {"address_type", RPCArg::Type::STR, /* default */ "set by -addresstype", "The address type to use. Options is \"bech32\". \"legacy\" and \"p2sh-segwit\" are deprecated."},
                 },
                 RPCResult{
             "\"address\"    (string) The new bitcoin address\n"
@@ -189,7 +189,7 @@ static UniValue getnewaddress(const JSONRPCRequest& request)
         if (!ParseOutputType(request.params[1].get_str(), output_type)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", request.params[1].get_str()));
         }
-        if (output_type == OutputType::LEGACY) {
+        if ((output_type == OutputType::LEGACY) || (output_type == OutputType::P2SH_SEGWIT)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Discard address type '%s'", request.params[1].get_str()));
         }
     }
@@ -226,7 +226,7 @@ static UniValue getrawchangeaddress(const JSONRPCRequest& request)
                 "\nReturns a new Bitcoin address, for receiving change.\n"
                 "This is for use with raw transactions, NOT normal use.\n",
                 {
-                    {"address_type", RPCArg::Type::STR, /* default */ "set by -changetype", "The address type to use. Options are \"legacy\", \"p2sh-segwit\", and \"bech32\"."},
+                    {"address_type", RPCArg::Type::STR, /* default */ "set by -changetype", "The address type to use. Options is \"bech32\". \"legacy\" and \"p2sh-segwit\" are deprecated."},
                 },
                 RPCResult{
             "\"address\"    (string) The address\n"
@@ -251,6 +251,9 @@ static UniValue getrawchangeaddress(const JSONRPCRequest& request)
     if (!request.params[0].isNull()) {
         if (!ParseOutputType(request.params[0].get_str(), output_type)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", request.params[0].get_str()));
+        }
+        if ((output_type == OutputType::LEGACY) || (output_type == OutputType::P2SH_SEGWIT)) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Discard address type '%s'", request.params[1].get_str()));
         }
     }
 
@@ -985,7 +988,7 @@ static UniValue addmultisigaddress(const JSONRPCRequest& request)
                         },
                         },
                     {"label", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, "A label to assign the addresses to."},
-                    {"address_type", RPCArg::Type::STR, /* default */ "set by -addresstype", "The address type to use. Options are \"legacy\", \"p2sh-segwit\", and \"bech32\"."},
+                    {"address_type", RPCArg::Type::STR, /* default */ "set by -addresstype", "The address type to use. Options is \"bech32\". \"legacy\" and \"p2sh-segwit\" are deprecated."},
                 },
                 RPCResult{
             "{\n"
@@ -1027,6 +1030,9 @@ static UniValue addmultisigaddress(const JSONRPCRequest& request)
     if (!request.params[3].isNull()) {
         if (!ParseOutputType(request.params[3].get_str(), output_type)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", request.params[3].get_str()));
+        }
+        if ((output_type == OutputType::LEGACY) || (output_type == OutputType::P2SH_SEGWIT)) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Discard address type '%s'", request.params[1].get_str()));
         }
     }
 
