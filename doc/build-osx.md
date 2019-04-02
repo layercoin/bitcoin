@@ -16,7 +16,7 @@ Then install [Homebrew](https://brew.sh).
 Dependencies
 ----------------------
 
-    brew install automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf python qt libevent qrencode
+    brew install automake berkeley-db6 libtool boost miniupnpc openssl pkg-config protobuf python qt libevent qrencode
 
 See [dependencies.md](dependencies.md) for a complete overview.
 
@@ -26,12 +26,12 @@ If you want to build the disk image with `make deploy` (.dmg / optional), you ne
 
 Berkeley DB
 -----------
-It is recommended to use Berkeley DB 4.8. If you have to build it yourself,
-you can use [the installation script included in contrib/](/contrib/install_db4.sh)
+It is recommended to use Berkeley DB 6.2. If you have to build it yourself,
+you can use [the installation script included in contrib/](/contrib/install_db6.sh)
 like so:
 
 ```shell
-./contrib/install_db4.sh .
+./contrib/install_db6.sh .
 ```
 
 from the root of the repository.
@@ -71,7 +71,7 @@ disable-wallet mode with:
 
     ./configure --disable-wallet
 
-In this case there is no dependency on Berkeley DB 4.8.
+In this case there is no dependency on Berkeley DB 6.2.
 
 Mining is also possible in disable-wallet mode using the `getblocktemplate` RPC call.
 
