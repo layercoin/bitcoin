@@ -88,7 +88,7 @@ VB_WITNESS_BIT = 1
 VB_PERIOD = 144
 VB_TOP_BITS = 0x20000000
 
-MAX_SIGOP_COST = 80000
+MAX_SIGOP_COST = 20000
 
 class UTXO():
     """Used to keep track of anyone-can-spend outputs that we can use in the tests."""

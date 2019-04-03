@@ -85,12 +85,12 @@ class MaxUploadTest(BitcoinTestFramework):
         getdata_request = msg_getdata()
         getdata_request.inv.append(CInv(2, big_old_block))
 
-        max_bytes_per_day = 800*1024*1024
-        daily_buffer = 144 * 4000000
+        max_bytes_per_day = 200*1024*1024
+        daily_buffer = 144 * 1000000
         max_bytes_available = max_bytes_per_day - daily_buffer
         success_count = max_bytes_available // old_block_size
 
-        # 576MB will be reserved for relaying new blocks, so expect this to
+        # 144MB will be reserved for relaying new blocks, so expect this to
         # succeed for ~235 tries.
         for i in range(success_count):
             p2p_conns[0].send_message(getdata_request)
