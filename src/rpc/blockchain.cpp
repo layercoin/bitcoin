@@ -1252,22 +1252,6 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             "  \"pruneheight\": xxxxxx,        (numeric) lowest-height complete block stored (only present if pruning is enabled)\n"
             "  \"automatic_pruning\": xx,      (boolean) whether automatic pruning is enabled (only present if pruning is enabled)\n"
             "  \"prune_target_size\": xxxxxx,  (numeric) the target size used by pruning (only present if automatic pruning is enabled)\n"
-            "  \"bip9_softforks\": {           (object) status of BIP9 softforks in progress\n"
-            "     \"xxxx\" : {                 (string) name of the softfork\n"
-            "        \"status\": \"xxxx\",       (string) one of \"defined\", \"started\", \"locked_in\", \"active\", \"failed\"\n"
-            "        \"bit\": xx,              (numeric) the bit (0-28) in the block version field used to signal this softfork (only for \"started\" status)\n"
-            "        \"startTime\": xx,        (numeric) the minimum median time past of a block at which the bit gains its meaning\n"
-            "        \"timeout\": xx,          (numeric) the median time past of a block at which the deployment is considered failed if not yet locked in\n"
-            "        \"since\": xx,            (numeric) height of the first block to which the status applies\n"
-            "        \"statistics\": {         (object) numeric statistics about BIP9 signalling for a softfork (only for \"started\" status)\n"
-            "           \"period\": xx,        (numeric) the length in blocks of the BIP9 signalling period \n"
-            "           \"threshold\": xx,     (numeric) the number of blocks with the version bit set required to activate the feature \n"
-            "           \"elapsed\": xx,       (numeric) the number of blocks elapsed since the beginning of the current period \n"
-            "           \"count\": xx,         (numeric) the number of blocks with the version bit set in the current period \n"
-            "           \"possible\": xx       (boolean) returns false if there are not enough blocks left in this period to pass activation threshold \n"
-            "        }\n"
-            "     }\n"
-            "  }\n"
             "  \"warnings\" : \"...\",           (string) any network and blockchain warnings.\n"
             "}\n"
                 },
@@ -1308,13 +1292,6 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             obj.pushKV("prune_target_size",  nPruneTarget);
         }
     }
-
-    const Consensus::Params& consensusParams = Params().GetConsensus();
-    UniValue bip9_softforks(UniValue::VOBJ);
-    for (int pos = Consensus::DEPLOYMENT_CSV; pos != Consensus::MAX_VERSION_BITS_DEPLOYMENTS; ++pos) {
-        BIP9SoftForkDescPushBack(bip9_softforks, consensusParams, static_cast<Consensus::DeploymentPos>(pos));
-    }
-    obj.pushKV("bip9_softforks", bip9_softforks);
 
     obj.pushKV("warnings", GetWarnings("statusbar"));
     return obj;

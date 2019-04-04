@@ -1753,9 +1753,7 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consens
     flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
 
     // Start enforcing BIP68 (sequence locks) and BIP112 (CHECKSEQUENCEVERIFY) using versionbits logic.
-    if (VersionBitsState(pindex->pprev, consensusparams, Consensus::DEPLOYMENT_CSV, versionbitscache) == ThresholdState::ACTIVE) {
-        flags |= SCRIPT_VERIFY_CHECKSEQUENCEVERIFY;
-    }
+    flags |= SCRIPT_VERIFY_CHECKSEQUENCEVERIFY;
 
     if (IsNullDummyEnabled(pindex->pprev, consensusparams)) {
         flags |= SCRIPT_VERIFY_NULLDUMMY;
@@ -1865,9 +1863,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     // Start enforcing BIP68 (sequence locks) and BIP112 (CHECKSEQUENCEVERIFY) using versionbits logic.
     int nLockTimeFlags = 0;
-    if (VersionBitsState(pindex->pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_CSV, versionbitscache) == ThresholdState::ACTIVE) {
-        nLockTimeFlags |= LOCKTIME_VERIFY_SEQUENCE;
-    }
+    nLockTimeFlags |= LOCKTIME_VERIFY_SEQUENCE;
 
     // Get the script flags for this block
     unsigned int flags = GetBlockScriptFlags(pindex, chainparams.GetConsensus());
@@ -3190,10 +3186,8 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
 
     // Start enforcing BIP113 (Median Time Past) using versionbits logic.
     int nLockTimeFlags = 0;
-    if (VersionBitsState(pindexPrev, consensusParams, Consensus::DEPLOYMENT_CSV, versionbitscache) == ThresholdState::ACTIVE) {
-        assert(pindexPrev != nullptr);
-        nLockTimeFlags |= LOCKTIME_MEDIAN_TIME_PAST;
-    }
+    assert(pindexPrev != nullptr);
+    nLockTimeFlags |= LOCKTIME_MEDIAN_TIME_PAST;
 
     int64_t nLockTimeCutoff = (nLockTimeFlags & LOCKTIME_MEDIAN_TIME_PAST)
                               ? pindexPrev->GetMedianTimePast()
