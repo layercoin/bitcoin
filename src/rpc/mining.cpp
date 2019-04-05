@@ -368,8 +368,8 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
             "}\n"
                 },
                 RPCExamples{
-                    HelpExampleCli("getblocktemplate", "{\"rules\": [\"segwit\"]}")
-            + HelpExampleRpc("getblocktemplate", "{\"rules\": [\"segwit\"]}")
+                    HelpExampleCli("getblocktemplate", "{\"rules\": [\"testdummy\"]}")
+            + HelpExampleRpc("getblocktemplate", "{\"rules\": [\"testdummy\"]}")
                 },
             }.ToString());
 
@@ -497,12 +497,6 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
         // TODO: Maybe recheck connections/IBD and (if something wrong) send an expires-immediately template to stop miners?
     }
 
-    const struct VBDeploymentInfo& segwit_info = VersionBitsDeploymentInfo[Consensus::DEPLOYMENT_SEGWIT];
-    // GBT must be called with 'segwit' set in the rules
-    if (setClientRules.count(segwit_info.name) != 1) {
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "getblocktemplate must be called with the segwit rule set (call with {\"rules\": [\"segwit\"]})");
-    }
-
     // Update block
     static CBlockIndex* pindexPrev;
     static int64_t nStart;
@@ -535,9 +529,6 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
     UpdateTime(pblock, consensusParams, pindexPrev);
     pblock->nNonce = uint256();
 
-    // NOTE: If at some point we support pre-segwit miners post-segwit-activation, this needs to take segwit support into consideration
-    const bool fPreSegWit = (ThresholdState::ACTIVE != VersionBitsState(pindexPrev, consensusParams, Consensus::DEPLOYMENT_SEGWIT, versionbitscache));
-
     UniValue aCaps(UniValue::VARR); aCaps.push_back("proposal");
 
     UniValue transactions(UniValue::VARR);
@@ -568,10 +559,8 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
         int index_in_template = i - 1;
         entry.pushKV("fee", pblocktemplate->vTxFees[index_in_template]);
         int64_t nTxSigOps = pblocktemplate->vTxSigOpsCost[index_in_template];
-        if (fPreSegWit) {
-            assert(nTxSigOps % WITNESS_SCALE_FACTOR == 0);
-            nTxSigOps /= WITNESS_SCALE_FACTOR;
-        }
+        assert(nTxSigOps % WITNESS_SCALE_FACTOR == 0);
+        nTxSigOps /= WITNESS_SCALE_FACTOR;
         entry.pushKV("sigops", nTxSigOps);
         entry.pushKV("weight", GetTransactionWeight(tx));
 
@@ -657,17 +646,13 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("noncerange", "00000000ffffffff");
     int64_t nSigOpLimit = MAX_BLOCK_SIGOPS_COST;
     int64_t nSizeLimit = MAX_BLOCK_SERIALIZED_SIZE;
-    if (fPreSegWit) {
-        assert(nSigOpLimit % WITNESS_SCALE_FACTOR == 0);
-        nSigOpLimit /= WITNESS_SCALE_FACTOR;
-        assert(nSizeLimit % WITNESS_SCALE_FACTOR == 0);
-        nSizeLimit /= WITNESS_SCALE_FACTOR;
-    }
+    assert(nSigOpLimit % WITNESS_SCALE_FACTOR == 0);
+    nSigOpLimit /= WITNESS_SCALE_FACTOR;
+    assert(nSizeLimit % WITNESS_SCALE_FACTOR == 0);
+    nSizeLimit /= WITNESS_SCALE_FACTOR;
     result.pushKV("sigoplimit", nSigOpLimit);
     result.pushKV("sizelimit", nSizeLimit);
-    if (!fPreSegWit) {
-        result.pushKV("weightlimit", (int64_t)MAX_BLOCK_WEIGHT);
-    }
+    result.pushKV("weightlimit", (int64_t)MAX_BLOCK_WEIGHT);
     result.pushKV("curtime", pblock->GetBlockTime());
     result.pushKV("bits", strprintf("%08x", pblock->nBits));
     result.pushKV("height", (int64_t)(pindexPrev->nHeight+1));
