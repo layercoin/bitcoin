@@ -6,9 +6,4 @@
 
 #include <consensus/params.h>
 
-const struct VBDeploymentInfo VersionBitsDeploymentInfo[Consensus::MAX_VERSION_BITS_DEPLOYMENTS] = {
-    {
-        /*.name =*/ "testdummy",
-        /*.gbt_force =*/ true,
-    }
-};
+const struct VBDeploymentInfo VersionBitsDeploymentInfo[Consensus::MAX_VERSION_BITS_DEPLOYMENTS] = {};
