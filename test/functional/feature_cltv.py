@@ -22,6 +22,7 @@ from test_framework.util import (
 from io import BytesIO
 
 CLTV_HEIGHT = 1351
+VB_TOP_BITS = 0x20000000
 
 # Reject codes that we might receive in this test
 REJECT_INVALID = 16
@@ -82,7 +83,7 @@ class BIP65Test(BitcoinTestFramework):
         tip = self.nodes[0].getbestblockhash()
         block_time = self.nodes[0].getblockheader(tip)['mediantime'] + 1
         block = create_block(int(tip, 16), create_coinbase(CLTV_HEIGHT - 1), block_time)
-        block.nVersion = 3
+        block.nVersion = VB_TOP_BITS
         block.vtx.append(spendtx)
         block.hashMerkleRoot = block.calc_merkle_root()
         block.solve()
@@ -94,7 +95,7 @@ class BIP65Test(BitcoinTestFramework):
         tip = block.sha256
         block_time += 1
         block = create_block(tip, create_coinbase(CLTV_HEIGHT), block_time)
-        block.nVersion = 3
+        block.nVersion = VB_TOP_BITS
         block.solve()
 
         with self.nodes[0].assert_debug_log(expected_msgs=['{}, bad-version(0x00000003)'.format(block.hash)]):
@@ -103,7 +104,7 @@ class BIP65Test(BitcoinTestFramework):
             self.nodes[0].p2p.sync_with_ping()
 
         self.log.info("Test that invalid-according-to-cltv transactions cannot appear in a block")
-        block.nVersion = 4
+        block.nVersion = VB_TOP_BITS
 
         spendtx = create_transaction(self.nodes[0], self.coinbase_txids[1],
                 self.nodeaddress, amount=1.0)

@@ -49,8 +49,9 @@ TIME_GENESIS_BLOCK = 1296688602
 # From BIP141
 WITNESS_COMMITMENT_HEADER = b"\xaa\x21\xa9\xed"
 
+VB_TOP_BITS = 0x20000000 
 
-def create_block(hashprev, coinbase, ntime=None, *, version=1):
+def create_block(hashprev, coinbase, ntime=None, *, version=VB_TOP_BITS):
     """Create a block (with regtest difficulty)."""
     block = CBlock()
     block.nVersion = version
