@@ -680,13 +680,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 
 fs::path GetDefaultDataDir()
 {
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\Bitcoin
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\Bitcoin
-    // Mac: ~/Library/Application Support/Bitcoin
-    // Unix: ~/.bitcoin
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\Layercoin
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\Layercoin
+    // Mac: ~/Library/Application Support/Layercoin
+    // Unix: ~/.layercoin
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Bitcoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "Layercoin";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -696,10 +696,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/Bitcoin";
+    return pathRet / "Library/Application Support/Layercoin";
 #else
     // Unix
-    return pathRet / ".bitcoin";
+    return pathRet / ".layercoin";
 #endif
 #endif
 }
