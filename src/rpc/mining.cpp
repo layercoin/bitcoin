@@ -368,8 +368,8 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
             "}\n"
                 },
                 RPCExamples{
-                    HelpExampleCli("getblocktemplate")
-            + HelpExampleRpc("getblocktemplate")
+                    HelpExampleCli("getblocktemplate", "")
+            + HelpExampleRpc("getblocktemplate", "")
                 },
             }.ToString());
 
