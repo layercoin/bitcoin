@@ -1,4 +1,4 @@
-Sample init scripts and service configuration for bitcoind
+Sample init scripts and service configuration for layercoind
 ==========================================================
 
 Sample scripts and configuration files for systemd, Upstart and OpenRC
@@ -53,7 +53,7 @@ Paths
 
 All three configurations assume several paths that might need to be adjusted.
 
-Binary:              `/usr/bin/bitcoind`  
+Binary:              `/usr/bin/layercoind`  
 Configuration file:  `/etc/bitcoin/bitcoin.conf`  
 Data directory:      `/var/lib/bitcoind`  
 PID file:            `/var/run/bitcoind/bitcoind.pid` (OpenRC and Upstart) or `/run/bitcoind/bitcoind.pid` (systemd)
@@ -83,7 +83,7 @@ OpenRC).
 
 ### macOS
 
-Binary:              `/usr/local/bin/bitcoind`  
+Binary:              `/usr/local/bin/layercoind`  
 Configuration file:  `~/Library/Application Support/Layercoin/bitcoin.conf`  
 Data directory:      `~/Library/Application Support/Layercoin`  
 Lock file:           `~/Library/Application Support/Layercoin/.lock`  

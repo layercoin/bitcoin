@@ -16,11 +16,18 @@ To receive security and update notifications, please subscribe to:
 How to Upgrade
 ==============
 
+<<<<<<< HEAD
 If you are running an older version, shut it down. Wait until it has
 completely shut down (which might take a few minutes for older
 versions), then run the installer (on Windows) or just copy over
 `/Applications/Bitcoin-Qt` (on Mac) or `bitcoind`/`bitcoin-qt` (on
 Linux).
+=======
+If you are running an older version, shut it down. Wait until it has completely
+shut down (which might take a few minutes for older versions), then run the
+installer (on Windows) or just copy over `/Applications/Layercoin-Qt` (on Mac)
+or `layercoind`/`layercoin-qt` (on Linux).
+>>>>>>> da2c312cd... change binary file name to layercoin
 
 The first time you run version 0.15.0 or newer, your chainstate database
 will be converted to a new format, which will take anywhere from a few
@@ -73,7 +80,6 @@ switching wallets using the dropdown menu. For now, it is recommended
 not to use coin control features with multiple wallets loaded.
 
 Notable changes
-===============
 
 
 0.18.x change log

@@ -1,14 +1,14 @@
 *.tar.gz
 
 *.exe
-src/bitcoin
-src/bitcoind
-src/bitcoin-cli
-src/bitcoin-tx
-src/bitcoin-wallet
-src/test/test_bitcoin
+src/layercoin
+src/layercoind
+src/layercoin-cli
+src/layercoin-tx
+src/layercoin-wallet
+src/test/test_layercoin
 src/test/test_bitcoin_fuzzy
-src/qt/test/test_bitcoin-qt
+src/qt/test/test_layercoin-qt
 
 # autoreconf
 Makefile.in
