@@ -18,8 +18,8 @@ expand_path() {
 }
 
 BDB_PREFIX="$(expand_path ${1})/db6"; shift;
-BDB_VERSION='db-6.2.23'
-BDB_HASH='47612c8991aa9ac2f6be721267c8d3cdccf5ac83105df8e50809daea24e95dc7'
+BDB_VERSION='db-6.2.32'
+BDB_HASH='a9c5e2b004a5777aa03510cfe5cd766a4a3b777713406b02809c17c8e0e7a8fb'
 BDB_URL="https://download.oracle.com/berkeley-db/${BDB_VERSION}.tar.gz"
 
 check_exists() {

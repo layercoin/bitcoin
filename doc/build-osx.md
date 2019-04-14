@@ -32,6 +32,7 @@ like so:
 
 ```shell
 ./contrib/install_db6.sh .
+export BDB_PREFIX="$PWD/db6"
 ```
 
 from the root of the repository.
@@ -53,7 +54,7 @@ Build Bitcoin Core
     You can disable the GUI build by passing `--without-gui` to configure.
 
         ./autogen.sh
-        ./configure
+        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-6.2" BDB_CFLAGS="-I${BDB_PREFIX}/include"
         make
 
 3.  It is recommended to build and run the unit tests:
