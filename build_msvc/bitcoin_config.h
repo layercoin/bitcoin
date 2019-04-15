@@ -340,7 +340,7 @@
 #define LT_OBJDIR ".libs/"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "https://github.com/bitcoin/bitcoin/issues"
+#define PACKAGE_BUGREPORT "https://github.com/layercoin/layercoin/issues"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "Bitcoin Core"
@@ -352,7 +352,7 @@
 #define PACKAGE_TARNAME "bitcoin"
 
 /* Define to the home page for this package. */
-#define PACKAGE_URL "https://bitcoincore.org/"
+#define PACKAGE_URL "https://www.layercoin.info/"
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "0.17.99"
