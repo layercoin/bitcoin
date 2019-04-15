@@ -643,8 +643,8 @@
         <translation>Hierdie etiket raak rooi as enige ontvanger 'n bedrag kleiner as die huidige stof drempel ontvang.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 satoshi(s) per input.</source>
-        <translation>Kan verskil met +/- %1 satoshi(s) per invoer.</translation>
+        <source>Can vary +/- %1 dragon(s) per input.</source>
+        <translation>Kan verskil met +/- %1 dragon(s) per invoer.</translation>
     </message>
     <message>
         <source>(no label)</source>

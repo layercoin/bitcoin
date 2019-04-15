@@ -17,10 +17,10 @@ BitcoinUnits::BitcoinUnits(QObject *parent):
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(BTC);
-    unitlist.append(mBTC);
-    unitlist.append(uBTC);
-    unitlist.append(SAT);
+    unitlist.append(LYC);
+    unitlist.append(mLYC);
+    unitlist.append(uLYC);
+    unitlist.append(DRA);
     return unitlist;
 }
 
@@ -28,10 +28,10 @@ bool BitcoinUnits::valid(int unit)
 {
     switch(unit)
     {
-    case BTC:
-    case mBTC:
-    case uBTC:
-    case SAT:
+    case LYC:
+    case mLYC:
+    case uLYC:
+    case DRA:
         return true;
     default:
         return false;
@@ -42,10 +42,10 @@ QString BitcoinUnits::longName(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("BTC");
-    case mBTC: return QString("mBTC");
-    case uBTC: return QString::fromUtf8("µBTC (bits)");
-    case SAT: return QString("Satoshi (sat)");
+    case LYC: return QString("LYC");
+    case mLYC: return QString("mLYC");
+    case uLYC: return QString::fromUtf8("µLYC (bits)");
+    case DRA: return QString("Dragon (dra)");
     default: return QString("???");
     }
 }
@@ -54,8 +54,8 @@ QString BitcoinUnits::shortName(int unit)
 {
     switch(unit)
     {
-    case uBTC: return QString::fromUtf8("bits");
-    case SAT: return QString("sat");
+    case uLYC: return QString::fromUtf8("bits");
+    case DRA: return QString("dra");
     default: return longName(unit);
     }
 }
@@ -64,10 +64,10 @@ QString BitcoinUnits::description(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("Bitcoins");
-    case mBTC: return QString("Milli-Bitcoins (1 / 1" THIN_SP_UTF8 "000)");
-    case uBTC: return QString("Micro-Bitcoins (bits) (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-    case SAT: return QString("Satoshi (sat) (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case LYC: return QString("Layercoins");
+    case mLYC: return QString("Milli-Layercoins (1 / 1" THIN_SP_UTF8 "000)");
+    case uLYC: return QString("Micro-Layercoins (bits) (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case DRA: return QString("Dragon (dra) (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     default: return QString("???");
     }
 }
@@ -76,10 +76,10 @@ qint64 BitcoinUnits::factor(int unit)
 {
     switch(unit)
     {
-    case BTC: return 100000000;
-    case mBTC: return 100000;
-    case uBTC: return 100;
-    case SAT: return 1;
+    case LYC: return 100000000;
+    case mLYC: return 100000;
+    case uLYC: return 100;
+    case DRA: return 1;
     default: return 100000000;
     }
 }
@@ -88,10 +88,10 @@ int BitcoinUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case BTC: return 8;
-    case mBTC: return 5;
-    case uBTC: return 2;
-    case SAT: return 0;
+    case LYC: return 8;
+    case mLYC: return 5;
+    case uLYC: return 2;
+    case DRA: return 0;
     default: return 0;
     }
 }

@@ -753,8 +753,8 @@
         <translation>Esta etiqueta fica vermelha se qualquer destinatário recebe um valor menor que o limite de dinheiro.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 satoshi(s) per input.</source>
-        <translation>Pode variar +/- %1 satoshi(s) por input.</translation>
+        <source>Can vary +/- %1 dragon(s) per input.</source>
+        <translation>Pode variar +/- %1 dragon(s) por input.</translation>
     </message>
     <message>
         <source>(no label)</source>

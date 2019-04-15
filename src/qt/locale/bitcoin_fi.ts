@@ -717,8 +717,8 @@
         <translation>Tämä nimike muuttuu punaiseksi, jos jokin vastaanottajista on saamassa tämänhetkistä tomun rajaa pienemmän summan.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 satoshi(s) per input.</source>
-        <translation>Saattaa vaihdella +/- %1 satoshia per syöte.</translation>
+        <source>Can vary +/- %1 dragon(s) per input.</source>
+        <translation>Saattaa vaihdella +/- %1 dragona per syöte.</translation>
     </message>
     <message>
         <source>(no label)</source>
