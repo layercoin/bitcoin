@@ -113,8 +113,8 @@ def serialize_script_num(value):
         r[-1] |= 0x80
     return r
 
-def create_coinbase(height, pubkey=None):
-    """Create a coinbase transaction, assuming no miner fees.
+def create_coinbase(height, pubkey=None, fees=0):
+    """Create a coinbase transaction.
 
     If pubkey is passed in, the coinbase output will be a P2PK output;
     otherwise an anyone-can-spend output."""
@@ -124,6 +124,7 @@ def create_coinbase(height, pubkey=None):
     blockreward = 50 * COIN
     halvings = int(height / 150)  # regtest
     blockreward = blockreward >> halvings
+    blockreward += fees
     coinbaseoutputminer = CTxOut()
     coinbaseoutputminer.nValue = int(blockreward * 0.8)
     if (pubkey is not None):
