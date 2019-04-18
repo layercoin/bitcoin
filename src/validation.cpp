@@ -1751,6 +1751,9 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consens
     // Start enforcing BIP68 (sequence locks) and BIP112 (CHECKSEQUENCEVERIFY) using versionbits logic.
     flags |= SCRIPT_VERIFY_CHECKSEQUENCEVERIFY;
 
+    // Start enforcing Taproot using versionbits logic.
+    flags |= SCRIPT_VERIFY_TAPROOT;
+
     // default active NULLDUMMY (BIP 147)
     flags |= SCRIPT_VERIFY_NULLDUMMY;
 
