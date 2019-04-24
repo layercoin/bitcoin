@@ -155,11 +155,6 @@ static UniValue getrawtransaction(const JSONRPCRequest& request)
     uint256 hash = ParseHashV(request.params[0], "parameter 1");
     CBlockIndex* blockindex = nullptr;
 
-    if (hash == Params().GenesisBlock().hashMerkleRoot) {
-        // Special exception for the genesis block coinbase transaction
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "The genesis block coinbase is not considered an ordinary transaction and cannot be retrieved");
-    }
-
     // Accept either a bool (true) or a num (>=1) to indicate verbose output.
     bool fVerbose = false;
     if (!request.params[1].isNull()) {
@@ -175,6 +170,17 @@ static UniValue getrawtransaction(const JSONRPCRequest& request)
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Block hash not found");
         }
         in_active_chain = chainActive.Contains(blockindex);
+    } else {
+        if (hash == Params().GenesisBlock().hashMerkleRoot) {
+            LOCK(cs_main);
+
+            uint256 blockhash = Params().GenesisBlock().GetHash();
+            blockindex = LookupBlockIndex(blockhash);
+            if (!blockindex) {
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Block hash not found");
+            }
+            in_active_chain = chainActive.Contains(blockindex);
+        }
     }
 
     bool f_txindex_ready = false;
