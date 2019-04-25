@@ -31,7 +31,7 @@ you can use [the installation script included in contrib/](/contrib/install_db6.
 like so:
 
 ```shell
-./contrib/install_db6.sh .
+./contrib/install_db6.sh `pwd`
 export BDB_PREFIX="$PWD/db6"
 ```
 

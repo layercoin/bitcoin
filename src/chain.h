@@ -209,7 +209,7 @@ public:
     //! (memory only) Number of transactions in the chain up to and including this block.
     //! This value will be non-zero only if and only if transactions for this block and all its parents are available.
     //! Change to 64-bit type when necessary; won't happen before 2030
-    unsigned int nChainTx;
+    unsigned long long nChainTx;
 
     //! Verification status of this block. See enum BlockStatus
     uint32_t nStatus;
