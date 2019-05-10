@@ -1801,11 +1801,11 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     // Special case for the genesis block, skipping connection of its transactions
     // (its coinbase is unspendable)
-    if (block.GetHash() == chainparams.GetConsensus().hashGenesisBlock) {
-        if (!fJustCheck)
-            view.SetBestBlock(pindex->GetBlockHash());
-        return true;
-    }
+    // if (block.GetHash() == chainparams.GetConsensus().hashGenesisBlock) {
+    //     if (!fJustCheck)
+    //         view.SetBestBlock(pindex->GetBlockHash());
+    //     return true;
+    // }
 
     nBlocksTotal++;
 
@@ -1946,8 +1946,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     if (fJustCheck)
         return true;
 
-    if (!WriteUndoDataForBlock(blockundo, state, pindex, chainparams))
-        return false;
+    if (block.GetHash() != chainparams.GetConsensus().hashGenesisBlock) {
+        if (!WriteUndoDataForBlock(blockundo, state, pindex, chainparams))
+            return false;
+    }
 
     if (!pindex->IsValid(BLOCK_VALID_SCRIPTS)) {
         pindex->RaiseValidity(BLOCK_VALID_SCRIPTS);
