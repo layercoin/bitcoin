@@ -1,7 +1,7 @@
 Filename            | Description
 --------------------|----------------------------------------------------------------------------------------------------------------------------
 banlist.dat         | stores the IPs/Subnets of banned nodes
-bitcoin.conf        | contains configuration settings for layercoind or layercoin-qt
+layercoin.conf        | contains configuration settings for layercoind or layercoin-qt
 bitcoind.pid        | stores the process id of layercoind while running
 blocks/blk000??.dat | block data (custom, 128 MiB per file); since 0.8.0
 blocks/rev000??.dat | block undo data (custom); since 0.8.0 (format changed since pre-0.8)

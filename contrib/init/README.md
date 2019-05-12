@@ -1,7 +1,7 @@
 Sample configuration files for:
 ```
 SystemD: bitcoind.service
-Upstart: bitcoind.conf
+Upstart: layercoind.conf
 OpenRC:  bitcoind.openrc
          bitcoind.openrcconf
 CentOS:  bitcoind.init

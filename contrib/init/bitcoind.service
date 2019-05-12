@@ -5,7 +5,7 @@
 # See "man systemd.service" for details.
 
 # Note that almost all daemon options could be specified in
-# /etc/bitcoin/bitcoin.conf, except for those explicitly specified as arguments
+# /etc/bitcoin/layercoin.conf, except for those explicitly specified as arguments
 # in ExecStart=
 
 [Unit]
@@ -15,7 +15,7 @@ After=network.target
 [Service]
 ExecStart=/usr/bin/bitcoind -daemon \
                             -pid=/run/bitcoind/bitcoind.pid \
-                            -conf=/etc/bitcoin/bitcoin.conf \
+                            -conf=/etc/bitcoin/layercoin.conf \
                             -datadir=/var/lib/bitcoind
 
 # Process management
