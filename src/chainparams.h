@@ -84,6 +84,7 @@ public:
     const std::vector<SeedSpec6>& FixedSeeds() const { return vFixedSeeds; }
     const CCheckpointData& Checkpoints() const { return checkpointData; }
     const ChainTxData& TxData() const { return chainTxData; }
+    const std::string& GetFoundersRewardAddress(int height) const { return vFoundersRewardAddress[height % vFoundersRewardAddress.size()]; }
 protected:
     CChainParams() {}
 
@@ -105,6 +106,7 @@ protected:
     CCheckpointData checkpointData;
     ChainTxData chainTxData;
     bool m_fallback_fee_enabled;
+    std::vector<std::string> vFoundersRewardAddress;
 };
 
 /**

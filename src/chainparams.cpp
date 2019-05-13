@@ -55,12 +55,12 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  * transaction cannot be spent since it did not originally exist in the
  * database.
  *
- * CBlock(hash=0007efff4b2a38, ver=0x20000000, hashPrevBlock=00000000000000, hashMerkleRoot=0216c6, nTime=1555944126, nBits=1f07ffff, nNonce=uint256S("00175d"), vtx=1)
- *   CTransaction(hash=0216c6, ver=2, vin.size=1, vout.size=1, nLockTime=0)
+ * CBlock(hash=00046e35959751, ver=0x20000000, hashPrevBlock=00000000000000, hashMerkleRoot=afccf0, nTime=1556131503, nBits=1f07ffff, nNonce=uint256S("001a10"), vtx=1)
+ *   CTransaction(hash=afccf0, ver=2, vin.size=1, vout.size=1, nLockTime=0)
  *     CTxIn(COutPoint(000000, -1), coinbase 00010414416e797468696e6720697320706f737369626c65)
  *     CTxOut(nValue=50.00000000, scriptPubKey=001460139ff64d6a82c5e9b16f0f6671a1f9f7b3c12b)
  *     CTxOut(nValue=0, CoinbaseCommitment=e2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9)
- *   vMerkleTree: 0216c6
+ *   vMerkleTree: afccf0
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint256 nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
@@ -150,6 +150,15 @@ public:
 
         /* disable fallback fee on mainnet */
         m_fallback_fee_enabled = false;
+
+        // Founders Reward Address
+        vFoundersRewardAddress = {
+            "lc1qt7p9dw755za0wcd790h6klvdr5zxcfs7gjhlrj",
+            "lc1q58q7u87jaj2nxd9vymgmmhr6wklctjjngcjxta",
+            "lc1qhvf7z2mahxd6hlf4ts4m97dg4p7uyk4g2sr8l0",
+            "lc1qytfa8fzxqv545l7kqu8mqg9gd933cutfsxzx4x",
+            "lc1qauy4vrk9a3huh4xrdwdr6ws8ur0thxelppw3ss",
+        };
     }
 };
 

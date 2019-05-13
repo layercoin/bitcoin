@@ -17,6 +17,7 @@
 #include <cuckoocache.h>
 #include <hash.h>
 #include <index/txindex.h>
+#include <key_io.h>
 #include <policy/fees.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
@@ -1937,6 +1938,24 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                          error("ConnectBlock(): coinbase pays too much (actual=%d vs limit=%d)",
                                block.vtx[0]->GetValueOut(), blockReward),
                                REJECT_INVALID, "bad-cb-amount");
+
+    //  not check genesis block
+    if(pindex->nHeight != 0){
+        bool bFound = false;
+        CTxDestination dest = DecodeDestination(chainparams.GetFoundersRewardAddress(pindex->nHeight));
+        CScript scriptPubKey = GetScriptForDestination(dest);
+        for(unsigned int i = 0; i < block.vtx[0]->vout.size(); i++){
+            const CTxOut &out = block.vtx[0]->vout[i];
+            if((out.scriptPubKey == scriptPubKey) && (out.nValue == blockReward * 0.2)){
+                bFound = true;
+                break;
+            }
+        }
+        if(!bFound){
+            return state.DoS(100, error("%s: founders reward missing, height %d", __func__, pindex->nHeight), 
+                REJECT_INVALID, "bad-cb-founders-reward");
+        }
+    }
 
     if (!control.Wait())
         return state.DoS(100, error("%s: CheckQueue failed", __func__), REJECT_INVALID, "block-validation-failed");
