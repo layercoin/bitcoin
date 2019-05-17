@@ -171,7 +171,7 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210000;
-        consensus.powLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
         consensus.nPowTargetSpacing = 10 * 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
@@ -180,10 +180,10 @@ public:
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000007dbe94253893cbd463");
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000002000");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x0000000000000037a8cd3e06cd5edbfe9dd1dbcc5dacab279376ef7cfc2b4c75"); //1354312
+        consensus.defaultAssumeValid = uint256S("0x00"); //1354312
 
         //  0x4C52444E : "LRDN"
         pchMessageStart[0] = 0x4c;  //  'L'
@@ -195,10 +195,13 @@ public:
         m_assumed_blockchain_size = 30;
         m_assumed_chain_state_size = 2;
 
-        genesis = CreateGenesisBlock(1296688602, uint256(), 0x1d00ffff, 0x20000000, 50 * COIN, "0000");
+        genesis = CreateGenesisBlock(1558078848, 
+            uint256S("0000000000000000000000000000000000000000000000000000000000000142"), 
+            0x1f07ffff, 0x20000000, 50 * COIN,
+            "db2e1536cb0d78bba2b5ad7bb00db43efc1d2d0e");
         consensus.hashGenesisBlock = genesis.GetHash();
-        // assert(consensus.hashGenesisBlock == uint256S("0x000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943"));
-        // assert(genesis.hashMerkleRoot == uint256S("0x0216c6d17078c9dd5e6b087d548c7cc9d54d77bbb77af027be81260d6ee496a6"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0002bdb81bf01a43d3a3789f0c95554de926704aa8ddd7a2761de183dd67027b"));
+        assert(genesis.hashMerkleRoot == uint256S("0xff7bf96e1944e3bbbdfff4c2efbdffbdb940c27fb07605049e4d2189eaea49ee"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -222,7 +225,7 @@ public:
 
         checkpointData = {
             {
-                {546, uint256S("000000002a936ca763904c3c35fce2f3556c559c0214345d31b1bcebf76acb70")},
+                {0, uint256S("0002bdb81bf01a43d3a3789f0c95554de926704aa8ddd7a2761de183dd67027b")},
             }
         };
 
@@ -235,6 +238,12 @@ public:
 
         /* enable fallback fee on testnet */
         m_fallback_fee_enabled = true;
+
+        // Founders Reward Address
+        vFoundersRewardAddress = {
+            "tl1qxl4qh8z0qcyxghp48lvcag6ptk36k66n04sx8q",
+            "tl1qvjesntdw7cvej854s0x0hrkl3jzw3kcp5779p0",
+        };
     }
 };
 
