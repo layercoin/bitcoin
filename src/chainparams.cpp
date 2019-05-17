@@ -62,10 +62,10 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  *     CTxOut(nValue=0, CoinbaseCommitment=e2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9)
  *   vMerkleTree: afccf0
  */
-static CBlock CreateGenesisBlock(uint32_t nTime, uint256 nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+static CBlock CreateGenesisBlock(uint32_t nTime, uint256 nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward, const char* outputScript)
 {
     const char* pszTimestamp = "Anything is possible";
-    const CScript genesisOutputScript = CScript() << OP_0 << ParseHex("60139ff64d6a82c5e9b16f0f6671a1f9f7b3c12b");
+    const CScript genesisOutputScript = CScript() << OP_0 << ParseHex(outputScript);
     const CScript genesisCoinbaseCommitmentScript = CScript() << OP_RETURN << ParseHex("aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9");
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, genesisCoinbaseCommitmentScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -109,7 +109,8 @@ public:
 
         genesis = CreateGenesisBlock(1556131503, 
             uint256S("0000000000000000000000000000000000000000000000000000000000001a10"), 
-            0x1f07ffff, 0x20000000, 50 * COIN);
+            0x1f07ffff, 0x20000000, 50 * COIN,
+            "60139ff64d6a82c5e9b16f0f6671a1f9f7b3c12b");
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x00046e35959751bfe44dae5f2e1e4ea7272f8abae9db7d0a3fef3e4e31de8e68"));
         assert(genesis.hashMerkleRoot == uint256S("0xafccf0d113145405742be92619e64c5aa3267bbe4d80c65b919523c9c18828af"));
@@ -194,7 +195,7 @@ public:
         m_assumed_blockchain_size = 30;
         m_assumed_chain_state_size = 2;
 
-        genesis = CreateGenesisBlock(1296688602, uint256(), 0x1d00ffff, 0x20000000, 50 * COIN);
+        genesis = CreateGenesisBlock(1296688602, uint256(), 0x1d00ffff, 0x20000000, 50 * COIN, "0000");
         consensus.hashGenesisBlock = genesis.GetHash();
         // assert(consensus.hashGenesisBlock == uint256S("0x000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943"));
         // assert(genesis.hashMerkleRoot == uint256S("0x0216c6d17078c9dd5e6b087d548c7cc9d54d77bbb77af027be81260d6ee496a6"));
@@ -271,10 +272,13 @@ public:
 
         UpdateVersionBitsParametersFromArgs(args);
 
-        genesis = CreateGenesisBlock(1296688602, uint256(), 0x207fffff, 0x20000000, 50 * COIN);
+        genesis = CreateGenesisBlock(1558073302, 
+            uint256S("0000000000000000000000000000000000000000000000000000000000000a99"), 
+            0x1f07ffff, 0x20000000, 50 * COIN,
+            "22f93fa544fc96895e001a7deb793866d9c73ed2");
         consensus.hashGenesisBlock = genesis.GetHash();
-        // assert(consensus.hashGenesisBlock == uint256S("0x0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206"));
-        // assert(genesis.hashMerkleRoot == uint256S("0x0216c6d17078c9dd5e6b087d548c7cc9d54d77bbb77af027be81260d6ee496a6"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0003916d81874cc38bb6f3b71e5f3edb981ab2dc5777303a8b75425924d280de"));
+        assert(genesis.hashMerkleRoot == uint256S("0x36a15cbaab2246e0810960b32f29bb7503a4012e4cb3ae541cb66dcb114da6e6"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
@@ -285,7 +289,7 @@ public:
 
         checkpointData = {
             {
-                {0, uint256S("0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206")},
+                {0, uint256S("0003916d81874cc38bb6f3b71e5f3edb981ab2dc5777303a8b75425924d280de")},
             }
         };
 
@@ -305,6 +309,12 @@ public:
 
         /* enable fallback fee on regtest */
         m_fallback_fee_enabled = true;
+
+        // Founders Reward Address
+        vFoundersRewardAddress = {
+            "lcrt1q5myg5la9929d7xjp8tjlluaq2l3q29znqvez0r",
+            "lcrt1qnkvr4qg34thhprt6pcedxqsw0lurt9v8npkfke",
+        };
     }
 
     /**
