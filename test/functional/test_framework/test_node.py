@@ -114,15 +114,15 @@ class TestNode():
         AddressKeyPair = collections.namedtuple('AddressKeyPair', ['address', 'key'])
         PRIV_KEYS = [
             # address , privkey
-            AddressKeyPair('mjTkW3DjgyZck4KbiRusZsqTgaYTxdSz6z', 'cVpF924EspNh8KjYsfhgY96mmxvT6DgdWiTYMtMjuM74hJaU5psW'),
-            AddressKeyPair('msX6jQXvxiNhx3Q62PKeLPrhrqZQdSimTg', 'cUxsWyKyZ9MAQTaAhUQWJmBbSvHMwSmuv59KgxQV7oZQU3PXN3KE'),
-            AddressKeyPair('mnonCMyH9TmAsSj3M59DsbH8H63U3RKoFP', 'cTrh7dkEAeJd6b3MRX9bZK8eRmNqVCMH3LSUkE3dSFDyzjU38QxK'),
-            AddressKeyPair('mqJupas8Dt2uestQDvV2NH3RU8uZh2dqQR', 'cVuKKa7gbehEQvVq717hYcbE9Dqmq7KEBKqWgWrYBa2CKKrhtRim'),
-            AddressKeyPair('msYac7Rvd5ywm6pEmkjyxhbCDKqWsVeYws', 'cQDCBuKcjanpXDpCqacNSjYfxeQj8G6CAtH1Dsk3cXyqLNC4RPuh'),
-            AddressKeyPair('n2rnuUnwLgXqf9kk2kjvVm8R5BZK1yxQBi', 'cQakmfPSLSqKHyMFGwAqKHgWUiofJCagVGhiB4KCainaeCSxeyYq'),
-            AddressKeyPair('myzuPxRwsf3vvGzEuzPfK9Nf2RfwauwYe6', 'cQMpDLJwA8DBe9NcQbdoSb1BhmFxVjWD5gRyrLZCtpuF9Zi3a9RK'),
-            AddressKeyPair('mumwTaMtbxEPUswmLBBN3vM9oGRtGBrys8', 'cSXmRKXVcoouhNNVpcNKFfxsTsToY5pvB9DVsFksF1ENunTzRKsy'),
-            AddressKeyPair('mpV7aGShMkJCZgbW7F6iZgrvuPHjZjH9qg', 'cSoXt6tm3pqy43UMabY6eUTmR3eSUYFtB2iNQDGgb3VUnRsQys2k'),
+            AddressKeyPair('lcrt1qmjfrfcdlzw7j2xqksxqaz80h0wsxs379nlkdqu', 'cQgEQ3idgQCfmQ4Dbw171pLJuY5F6SF9Wfpx5naUTaXG3WsgAtgd'),
+            AddressKeyPair('lcrt1qxhuaumq4vqwqd782exr3zj7wylvqx9jyxcsk03', 'cUKNZRRVVLwACvMf3fcifLnrz2XiScwGRFs95HRMPxqv198a5Sin'),
+            AddressKeyPair('lcrt1qfpyvsz8rzprltklf56yhmmwld79azlpvnehuma', 'cPgxxDTA3EhQ3BUh7cPCYTtnmvpcUF7pQuE46McihNBKe4BKxmdp'),
+            AddressKeyPair('lcrt1q5z3e83yqd3rjfdwkkh67e4glx3se3edf0de2sl', 'cMtiAwk2q1CXk7YTR4KFAqesR1v9zcggjHps4patWVmpzTaamkQk'),
+            AddressKeyPair('lcrt1q5qhy4uhf3yy2pw94985hkuwmq0q2p5pe6ysjrg', 'cURHZpWeGRaYZrKfR1h8duUH2hM7PXzJE42veKoBNQCFtigFo8Xe'),
+            AddressKeyPair('lcrt1q49qheh7nu06hxz2e8wuchs8f69jhrsuv7yre5v', 'cSaMpmxWnMMkrcuBSCefhpsJ9BeijZ4L94DXVJUasEu84JvBB12b'),
+            AddressKeyPair('lcrt1qsjv07aq8xxejpjxhq43rkn298zp20pxkzdpmny', 'cR5xUpBWU5o9WPu6374GwyT1BJURdfAM8ct5bxiZ4HN1d7c5SQGN'),
+            AddressKeyPair('lcrt1qvlz7nrlhrmj88jxwckfw9dvp9j4axl7qgjwhma', 'cQQGTHCXGzmw2y9o5goaccdr3iSsaEcw9rhy9Vh9zqzUKk3wJbha'),
+            AddressKeyPair('lcrt1qlz8t6g46ha60ss8txm02h6e0schqr7dfscuulv', 'cW4XWVDPGZgpdNSrHXMWCCe4fLvJUEoyMdRbzaDtTnEkpU9NJrHn'),
         ]
         return PRIV_KEYS[self.index]
 

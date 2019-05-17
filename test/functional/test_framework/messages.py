@@ -57,8 +57,14 @@ MSG_TYPE_MASK = 0xffffffff >> 2
 def sha256(s):
     return hashlib.new('sha256', s).digest()
 
+def sha512(s):
+    return hashlib.new('sha512', s).digest()
+
 def hash256(s):
     return sha256(sha256(s))
+
+def hash256ex(s):
+    return sha256(sha512(s))
 
 def ser_compact_size(l):
     r = b""
@@ -555,7 +561,7 @@ class CBlockHeader:
         self.hashMerkleRoot = deser_uint256(f)
         self.nTime = struct.unpack("<I", f.read(4))[0]
         self.nBits = struct.unpack("<I", f.read(4))[0]
-        self.nNonce = struct.unpack("<I", f.read(4))[0]
+        self.nNonce = deser_uint256(f)
         self.sha256 = None
         self.hash = None
 
@@ -566,7 +572,7 @@ class CBlockHeader:
         r += ser_uint256(self.hashMerkleRoot)
         r += struct.pack("<I", self.nTime)
         r += struct.pack("<I", self.nBits)
-        r += struct.pack("<I", self.nNonce)
+        r += ser_uint256(self.nNonce)
         return r
 
     def calc_sha256(self):
@@ -577,9 +583,9 @@ class CBlockHeader:
             r += ser_uint256(self.hashMerkleRoot)
             r += struct.pack("<I", self.nTime)
             r += struct.pack("<I", self.nBits)
-            r += struct.pack("<I", self.nNonce)
-            self.sha256 = uint256_from_str(hash256(r))
-            self.hash = encode(hash256(r)[::-1], 'hex_codec').decode('ascii')
+            r += ser_uint256(self.nNonce)
+            self.sha256 = uint256_from_str(hash256ex(r))
+            self.hash = encode(hash256ex(r)[::-1], 'hex_codec').decode('ascii')
 
     def rehash(self):
         self.sha256 = None
@@ -587,12 +593,12 @@ class CBlockHeader:
         return self.sha256
 
     def __repr__(self):
-        return "CBlockHeader(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTime=%s nBits=%08x nNonce=%08x)" \
+        return "CBlockHeader(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTime=%s nBits=%08x nNonce=%064x)" \
             % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot,
                time.ctime(self.nTime), self.nBits, self.nNonce)
 
 BLOCK_HEADER_SIZE = len(CBlockHeader().serialize())
-assert_equal(BLOCK_HEADER_SIZE, 80)
+assert_equal(BLOCK_HEADER_SIZE, 108)
 
 class CBlock(CBlockHeader):
     __slots__ = ("vtx",)
