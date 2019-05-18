@@ -44,12 +44,19 @@ from io import BytesIO
 MAX_BLOCK_SIGOPS = 20000
 
 # Genesis block time (regtest)
-TIME_GENESIS_BLOCK = 1296688602
+TIME_GENESIS_BLOCK = 1558073302
 
 # From BIP141
 WITNESS_COMMITMENT_HEADER = b"\xaa\x21\xa9\xed"
 
 VB_TOP_BITS = 0x20000000 
+
+# Founders Reward Address
+FOUNDERS_REWARD_ADDRESS_SCRIPT_PUBKEY = [
+    "0014a6c88a7fa52a8adf1a413ae5fff3a057e2051453",     # lcrt1q5myg5la9929d7xjp8tjlluaq2l3q29znqvez0r
+    "00149d983a8111aaef708d7a0e32d3020e7ff8359587"      # lcrt1qnkvr4qg34thhprt6pcedxqsw0lurt9v8npkfke
+]
+
 
 def create_block(hashprev, coinbase, ntime=None, *, version=VB_TOP_BITS):
     """Create a block (with regtest difficulty)."""
@@ -61,7 +68,7 @@ def create_block(hashprev, coinbase, ntime=None, *, version=VB_TOP_BITS):
     else:
         block.nTime = ntime
     block.hashPrevBlock = hashprev
-    block.nBits = 0x207fffff  # difficulty retargeting is disabled in REGTEST chainparams
+    block.nBits = 0x1f07ffff  # difficulty retargeting is disabled in REGTEST chainparams
     block.vtx.append(coinbase)
     block.hashMerkleRoot = block.calc_merkle_root()
     block.calc_sha256()
@@ -114,15 +121,19 @@ def create_coinbase(height, pubkey=None):
     coinbase = CTransaction()
     coinbase.vin.append(CTxIn(COutPoint(0, 0xffffffff),
                         ser_string(serialize_script_num(height)), 0xffffffff))
-    coinbaseoutput = CTxOut()
-    coinbaseoutput.nValue = 50 * COIN
+    blockreward = 50 * COIN
     halvings = int(height / 150)  # regtest
-    coinbaseoutput.nValue >>= halvings
+    blockreward >> halvings
+    coinbaseoutputminer = CTxOut()
+    coinbaseoutputminer.nValue = blockreward * 0.8
     if (pubkey is not None):
-        coinbaseoutput.scriptPubKey = CScript([pubkey, OP_CHECKSIG])
+        coinbaseoutputminer.scriptPubKey = CScript([pubkey, OP_CHECKSIG])
     else:
-        coinbaseoutput.scriptPubKey = CScript([OP_TRUE])
-    coinbase.vout = [coinbaseoutput]
+        coinbaseoutputminer.scriptPubKey = CScript([OP_TRUE])
+    coinbaseoutputfunder = CTxOut()
+    coinbaseoutputfunder.nValue = blockreward * 0.2
+    coinbaseoutputfunder.scriptPubKey = FOUNDERS_REWARD_ADDRESS_SCRIPT_PUBKEY[height % len(FOUNDERS_REWARD_ADDRESS_SCRIPT_PUBKEY)]
+    coinbase.vout = [coinbaseoutputminer, coinbaseoutputfunder]
     coinbase.calc_sha256()
     return coinbase
 
