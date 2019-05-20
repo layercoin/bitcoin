@@ -55,12 +55,12 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  * transaction cannot be spent since it did not originally exist in the
  * database.
  *
- * CBlock(hash=00046e35959751, ver=0x20000000, hashPrevBlock=00000000000000, hashMerkleRoot=afccf0, nTime=1556131503, nBits=1f07ffff, nNonce=uint256S("001a10"), vtx=1)
- *   CTransaction(hash=afccf0, ver=2, vin.size=1, vout.size=1, nLockTime=0)
+ * CBlock(hash=00000000ed7c35, ver=0x20000000, hashPrevBlock=00000000000000, hashMerkleRoot=40bc6a, nTime=1558350039, nBits=1d00ffff, nNonce=uint256S("34ff2cb8"), vtx=1)
+ *   CTransaction(hash=40bc6a, ver=2, vin.size=1, vout.size=1, nLockTime=0)
  *     CTxIn(COutPoint(000000, -1), coinbase 00010414416e797468696e6720697320706f737369626c65)
- *     CTxOut(nValue=50.00000000, scriptPubKey=001460139ff64d6a82c5e9b16f0f6671a1f9f7b3c12b)
+ *     CTxOut(nValue=50.00000000, scriptPubKey=0014b1a5d64a0eb9f43be7a3239759c7e1bdccd63831)
  *     CTxOut(nValue=0, CoinbaseCommitment=e2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9)
- *   vMerkleTree: afccf0
+ *   vMerkleTree: 40bc6a
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint256 nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward, const char* outputScript)
 {
@@ -78,7 +78,7 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 210000;
-        consensus.powLimit = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
         consensus.nPowTargetSpacing = 10 * 60;
         consensus.fPowAllowMinDifficultyBlocks = false;
@@ -87,7 +87,7 @@ public:
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000002000");
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000100010001");
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x0000000000000000000f1c54590ee18d15ec70e68c8cd4cfbadb1b4f11697eee"); //563378
@@ -107,13 +107,13 @@ public:
         m_assumed_blockchain_size = 240;
         m_assumed_chain_state_size = 3;
 
-        genesis = CreateGenesisBlock(1556131503, 
-            uint256S("0000000000000000000000000000000000000000000000000000000000001a10"), 
-            0x1f07ffff, 0x20000000, 50 * COIN,
-            "60139ff64d6a82c5e9b16f0f6671a1f9f7b3c12b");
+        genesis = CreateGenesisBlock(1558350039, 
+            uint256S("0000000000000000000000000000000000000000000000000000000034ff2cb8"), 
+            0x1d00ffff, 0x20000000, 50 * COIN,
+            "b1a5d64a0eb9f43be7a3239759c7e1bdccd63831");
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00046e35959751bfe44dae5f2e1e4ea7272f8abae9db7d0a3fef3e4e31de8e68"));
-        assert(genesis.hashMerkleRoot == uint256S("0xafccf0d113145405742be92619e64c5aa3267bbe4d80c65b919523c9c18828af"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000000ed7c3517b90c20cdb22ceb7176a522f652ba2c4c519c6c9ec2ef1c39"));
+        assert(genesis.hashMerkleRoot == uint256S("0x40bc6a163cf3c3f4f7b302efc4e670de8cd4f124d0bc8b5ba4e7fe210dc86044"));
 
         // Note that of those which support the service bits prefix, most only support a subset of
         // possible options.
@@ -138,7 +138,7 @@ public:
 
         checkpointData = {
             {
-                {0, uint256S("0x00046e35959751bfe44dae5f2e1e4ea7272f8abae9db7d0a3fef3e4e31de8e68")},
+                {0, uint256S("0x00000000ed7c3517b90c20cdb22ceb7176a522f652ba2c4c519c6c9ec2ef1c39")},
             }
         };
 
@@ -154,11 +154,11 @@ public:
 
         // Founders Reward Address
         vFoundersRewardAddress = {
-            "lc1qt7p9dw755za0wcd790h6klvdr5zxcfs7gjhlrj",
-            "lc1q58q7u87jaj2nxd9vymgmmhr6wklctjjngcjxta",
-            "lc1qhvf7z2mahxd6hlf4ts4m97dg4p7uyk4g2sr8l0",
-            "lc1qytfa8fzxqv545l7kqu8mqg9gd933cutfsxzx4x",
-            "lc1qauy4vrk9a3huh4xrdwdr6ws8ur0thxelppw3ss",
+            "lc1qkaetfn7fgadc4ea72aqmvsq9d35vkylagl5jps",
+            "lc1qspty2vw97nkjrhw7y0p6ky93d8xe9mxnc2q6ga",
+            "lc1qnr2u8tgv8hpht7qwpfl4qwt457ul6y547ragqx",
+            "lc1q4qv3xydwdpfhcp7r6k2rmwgand2z8snpc67z4x",
+            "lc1q2tndrfn7ftvnt0rhw98cwfycg0kn22qv0n24t4",
         };
     }
 };
