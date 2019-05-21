@@ -73,13 +73,13 @@ class MiningTest(BitcoinTestFramework):
         assert_equal(mining_info['chain'], 'regtest')
         assert 'currentblocktx' not in mining_info
         assert 'currentblockweight' not in mining_info
-        assert_equal(mining_info['difficulty'], Decimal('4.656542373906925E-10'))
-        assert_equal(mining_info['networkhashps'], Decimal('0.003333333333333334'))
+        assert_equal(mining_info['difficulty'], Decimal('1.907323166912278E-6'))
+        assert_equal(mining_info['networkhashps'], Decimal('13.65333333333333'))
         assert_equal(mining_info['pooledtx'], 0)
 
         # Mine a block to leave initial block download
         node.generatetoaddress(1, node.get_deterministic_priv_key().address)
-        tmpl = node.getblocktemplate()
+        tmpl = node.getblocktemplate()  #   {'rules': ['segwit']}
         self.log.info("getblocktemplate: Test capability advertised")
         assert 'proposal' in tmpl['capabilities']
         assert 'coinbasetxn' not in tmpl
@@ -105,8 +105,8 @@ class MiningTest(BitcoinTestFramework):
         block.nNonce = 0
         block.vtx = [coinbase_tx]
 
-        self.log.info("getblocktemplate: segwit rule must be set")
-        assert_raises_rpc_error(-8, "getblocktemplate must be called with the segwit rule set", node.getblocktemplate)
+        # self.log.info("getblocktemplate: segwit rule must be set")
+        # assert_raises_rpc_error(-8, "getblocktemplate must be called with the segwit rule set", node.getblocktemplate)
 
         self.log.info("getblocktemplate: Test valid block")
         assert_template(node, block, None)

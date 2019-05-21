@@ -558,8 +558,6 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
         int index_in_template = i - 1;
         entry.pushKV("fee", pblocktemplate->vTxFees[index_in_template]);
         int64_t nTxSigOps = pblocktemplate->vTxSigOpsCost[index_in_template];
-        assert(nTxSigOps % WITNESS_SCALE_FACTOR == 0);
-        nTxSigOps /= WITNESS_SCALE_FACTOR;
         entry.pushKV("sigops", nTxSigOps);
         entry.pushKV("weight", GetTransactionWeight(tx));
 
@@ -645,10 +643,6 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("noncerange", "00000000ffffffff");
     int64_t nSigOpLimit = MAX_BLOCK_SIGOPS_COST;
     int64_t nSizeLimit = MAX_BLOCK_SERIALIZED_SIZE;
-    assert(nSigOpLimit % WITNESS_SCALE_FACTOR == 0);
-    nSigOpLimit /= WITNESS_SCALE_FACTOR;
-    assert(nSizeLimit % WITNESS_SCALE_FACTOR == 0);
-    nSizeLimit /= WITNESS_SCALE_FACTOR;
     result.pushKV("sigoplimit", nSigOpLimit);
     result.pushKV("sizelimit", nSizeLimit);
     result.pushKV("weightlimit", (int64_t)MAX_BLOCK_WEIGHT);
