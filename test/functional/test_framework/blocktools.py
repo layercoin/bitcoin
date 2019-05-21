@@ -53,8 +53,8 @@ VB_TOP_BITS = 0x20000000
 
 # Founders Reward Address
 FOUNDERS_REWARD_ADDRESS_SCRIPT_PUBKEY = [
-    "0014a6c88a7fa52a8adf1a413ae5fff3a057e2051453",     # lcrt1q5myg5la9929d7xjp8tjlluaq2l3q29znqvez0r
-    "00149d983a8111aaef708d7a0e32d3020e7ff8359587"      # lcrt1qnkvr4qg34thhprt6pcedxqsw0lurt9v8npkfke
+    b"\x00\x14\xa6\xc8\x8a\x7f\xa5\x2a\x8a\xdf\x1a\x41\x3a\xe5\xff\xf3\xa0\x57\xe2\x05\x14\x53",     # lcrt1q5myg5la9929d7xjp8tjlluaq2l3q29znqvez0r
+    b"\x00\x14\x9d\x98\x3a\x81\x11\xaa\xef\x70\x8d\x7a\x0e\x32\xd3\x02\x0e\x7f\xf8\x35\x95\x87"      # lcrt1qnkvr4qg34thhprt6pcedxqsw0lurt9v8npkfke
 ]
 
 
@@ -123,15 +123,15 @@ def create_coinbase(height, pubkey=None):
                         ser_string(serialize_script_num(height)), 0xffffffff))
     blockreward = 50 * COIN
     halvings = int(height / 150)  # regtest
-    blockreward >> halvings
+    blockreward = blockreward >> halvings
     coinbaseoutputminer = CTxOut()
-    coinbaseoutputminer.nValue = blockreward * 0.8
+    coinbaseoutputminer.nValue = int(blockreward * 0.8)
     if (pubkey is not None):
         coinbaseoutputminer.scriptPubKey = CScript([pubkey, OP_CHECKSIG])
     else:
         coinbaseoutputminer.scriptPubKey = CScript([OP_TRUE])
     coinbaseoutputfunder = CTxOut()
-    coinbaseoutputfunder.nValue = blockreward * 0.2
+    coinbaseoutputfunder.nValue = int(blockreward * 0.2)
     coinbaseoutputfunder.scriptPubKey = FOUNDERS_REWARD_ADDRESS_SCRIPT_PUBKEY[height % len(FOUNDERS_REWARD_ADDRESS_SCRIPT_PUBKEY)]
     coinbase.vout = [coinbaseoutputminer, coinbaseoutputfunder]
     coinbase.calc_sha256()
