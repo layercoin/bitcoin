@@ -67,7 +67,7 @@ class MempoolAcceptanceTest(BitcoinTestFramework):
         coin = coins.pop()  # Pick a random coin(base) to spend
         raw_tx_in_block = node.signrawtransactionwithwallet(node.createrawtransaction(
             inputs=[{'txid': coin['txid'], 'vout': coin['vout']}],
-            outputs=[{node.getnewaddress(): 0.3}, {node.getnewaddress(): 49}],
+            outputs=[{node.getnewaddress(): 0.3}, {node.getnewaddress(): 39}],
         ))['hex']
         txid_in_block = node.sendrawtransaction(hexstring=raw_tx_in_block, allowhighfees=True)
         node.generate(1)
