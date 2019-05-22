@@ -76,17 +76,16 @@ class RESTTest (BitcoinTestFramework):
 
     def run_test(self):
         self.url = urllib.parse.urlparse(self.nodes[0].url)
-        self.log.info("Mine blocks and send Bitcoin to node 1")
+        self.log.info("Mine blocks and send Layercoin to node 1")
 
         # Random address so node1's balance doesn't increase
-        not_related_address = "2MxqoHEdNQTyYeX1mHcbrrpzgojbosTpCvJ"
+        not_related_address = "lcrt1q6at4qsnefxydj0hqsqxmnu6nesudzhs82qpr2a"
 
         self.nodes[0].generate(1)
         self.sync_all()
-        self.nodes[1].generatetoaddress(100, not_related_address)
+        self.nodes[1].generatetoaddress(144, not_related_address)
         self.sync_all()
-
-        assert_equal(self.nodes[0].getbalance(), 50)
+        assert_equal(self.nodes[0].getbalance(), 40)
 
         txid = self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 0.1)
         self.sync_all()
@@ -155,7 +154,7 @@ class RESTTest (BitcoinTestFramework):
         response_hash = binascii.hexlify(output.read(32)[::-1]).decode('ascii')
 
         assert_equal(bb_hash, response_hash)  # check if getutxo's chaintip during calculation was fine
-        assert_equal(chain_height, 102)  # chain height must be 102
+        assert_equal(chain_height, 146)  # chain height must be 146
 
         self.log.info("Test the /getutxos URI with and without /checkmempool")
         # Create a transaction, check that it's found with /checkmempool, but
