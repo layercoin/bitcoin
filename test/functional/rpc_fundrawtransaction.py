@@ -55,13 +55,19 @@ class RawTransactionsTest(BitcoinTestFramework):
         #            = 2 bytes * minRelayTxFeePerByte
         feeTolerance = 2 * min_relay_tx_fee/1000
 
-        self.nodes[2].generate(1)
+        # self.nodes[2].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[2].generate(blockcount))        
         self.sync_all()
-        self.nodes[0].generate(121)
+        # self.nodes[0].generate(121)
+        blockcount = 165
+        while blockcount > 0:
+            blockcount -= len(self.nodes[0].generate(blockcount))        
         self.sync_all()
 
         # ensure that setting changePosition in fundraw with an exact match is handled properly
-        rawmatch = self.nodes[2].createrawtransaction([], {self.nodes[2].getnewaddress():50})
+        rawmatch = self.nodes[2].createrawtransaction([], {self.nodes[2].getnewaddress():40})
         rawmatch = self.nodes[2].fundrawtransaction(rawmatch, {"changePosition":1, "subtractFeeFromOutputs":[0]})
         assert_equal(rawmatch["changepos"], -1)
 
@@ -81,7 +87,10 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(), 1.0)
         self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(), 5.0)
 
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[0].generate(blockcount))        
         self.sync_all()
 
         ###############
@@ -458,7 +467,10 @@ class RawTransactionsTest(BitcoinTestFramework):
         # send 1.2 LYC to msig addr
         txId = self.nodes[0].sendtoaddress(mSigObj, 1.2)
         self.sync_all()
-        self.nodes[1].generate(1)
+        # self.nodes[1].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[1].generate(blockcount))        
         self.sync_all()
 
         oldBalance = self.nodes[1].getbalance()
@@ -470,7 +482,10 @@ class RawTransactionsTest(BitcoinTestFramework):
         signedTx = self.nodes[2].signrawtransactionwithwallet(fundedTx['hex'])
         txId = self.nodes[2].sendrawtransaction(signedTx['hex'])
         self.sync_all()
-        self.nodes[1].generate(1)
+        # self.nodes[1].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[1].generate(blockcount))        
         self.sync_all()
 
         # make sure funds are received at node1
@@ -528,7 +543,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.sync_all()
 
         # make sure funds are received at node1
-        assert_equal(oldBalance+Decimal('51.10000000'), self.nodes[0].getbalance())
+        assert_equal(oldBalance+Decimal('41.10000000'), self.nodes[0].getbalance())
 
 
         ###############################################
@@ -538,12 +553,18 @@ class RawTransactionsTest(BitcoinTestFramework):
         #empty node1, send some small coins from node0 to node1
         self.nodes[1].sendtoaddress(self.nodes[0].getnewaddress(), self.nodes[1].getbalance(), "", "", True)
         self.sync_all()
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[0].generate(blockcount))        
         self.sync_all()
 
         for i in range(0,20):
             self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 0.01)
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[0].generate(blockcount))        
         self.sync_all()
 
         #fund a tx with ~20 small inputs
@@ -568,12 +589,18 @@ class RawTransactionsTest(BitcoinTestFramework):
         #again, empty node1, send some small coins from node0 to node1
         self.nodes[1].sendtoaddress(self.nodes[0].getnewaddress(), self.nodes[1].getbalance(), "", "", True)
         self.sync_all()
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[0].generate(blockcount))        
         self.sync_all()
 
         for i in range(0,20):
             self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 0.01)
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[0].generate(blockcount))        
         self.sync_all()
 
         #fund a tx with ~20 small inputs
@@ -586,9 +613,12 @@ class RawTransactionsTest(BitcoinTestFramework):
         fundedAndSignedTx = self.nodes[1].signrawtransactionwithwallet(fundedTx['hex'])
         txId = self.nodes[1].sendrawtransaction(fundedAndSignedTx['hex'])
         self.sync_all()
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[0].generate(blockcount))        
         self.sync_all()
-        assert_equal(oldBalance+Decimal('50.19000000'), self.nodes[0].getbalance()) #0.19+block reward
+        assert_equal(oldBalance+Decimal('40.19000000'), self.nodes[0].getbalance()) #0.19+block reward
 
         #####################################################
         # test fundrawtransaction with OP_RETURN and no vin #
@@ -646,7 +676,10 @@ class RawTransactionsTest(BitcoinTestFramework):
         signedtx = self.nodes[0].signrawtransactionwithwallet(signedtx["hex"])
         assert(signedtx["complete"])
         self.nodes[0].sendrawtransaction(signedtx["hex"])
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(self.nodes[0].generate(blockcount))        
         self.sync_all()
 
         #######################
