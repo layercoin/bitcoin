@@ -140,14 +140,14 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     coinbaseTx.vin[0].prevout.SetNull();
     coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
 
-    // block reward: miner 80%, founder 20%
+    // block reward: miner 80%, founder = block reward - miner
     CAmount blockReward = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
     coinbaseTx.vout.resize(2);
     coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
-    coinbaseTx.vout[0].nValue = blockReward * 0.8;
+    coinbaseTx.vout[0].nValue = int64_t(blockReward * 0.8);
     CTxDestination dest = DecodeDestination(chainparams.GetFoundersRewardAddress(nHeight));
     coinbaseTx.vout[1].scriptPubKey = GetScriptForDestination(dest);
-    coinbaseTx.vout[1].nValue = blockReward * 0.2;
+    coinbaseTx.vout[1].nValue = blockReward - coinbaseTx.vout[0].nValue;
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
     pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());
     pblocktemplate->vTxFees[0] = -nFees;
