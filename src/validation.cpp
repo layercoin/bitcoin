@@ -1946,7 +1946,8 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         CScript scriptPubKey = GetScriptForDestination(dest);
         for(unsigned int i = 0; i < block.vtx[0]->vout.size(); i++){
             const CTxOut &out = block.vtx[0]->vout[i];
-            if((out.scriptPubKey == scriptPubKey) && (out.nValue == int64_t(blockReward * 0.2))){
+            if((out.scriptPubKey == scriptPubKey) && 
+                (out.nValue == (blockReward - int64_t(blockReward * 0.8)))){
                 bFound = true;
                 break;
             }

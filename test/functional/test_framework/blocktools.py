@@ -131,7 +131,7 @@ def create_coinbase(height, pubkey=None):
     else:
         coinbaseoutputminer.scriptPubKey = CScript([OP_TRUE])
     coinbaseoutputfunder = CTxOut()
-    coinbaseoutputfunder.nValue = int(blockreward * 0.2)
+    coinbaseoutputfunder.nValue = blockreward - coinbaseoutputminer.nValue
     coinbaseoutputfunder.scriptPubKey = FOUNDERS_REWARD_ADDRESS_SCRIPT_PUBKEY[height % len(FOUNDERS_REWARD_ADDRESS_SCRIPT_PUBKEY)]
     coinbase.vout = [coinbaseoutputminer, coinbaseoutputfunder]
     coinbase.calc_sha256()
