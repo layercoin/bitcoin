@@ -19,7 +19,7 @@ TESTSDIR = os.path.dirname(os.path.realpath(__file__))
 
 class GetblockstatsTest(BitcoinTestFramework):
 
-    start_height = 101
+    start_height = 145
     max_stat_pos = 2
     STATS_NEED_TXINDEX = [
         'avgfee',
@@ -53,17 +53,26 @@ class GetblockstatsTest(BitcoinTestFramework):
 
     def generate_test_data(self, filename):
         mocktime = time.time()
-        self.nodes[0].generate(101)
+        # self.nodes[0].generate(101)
+        blockcount = 145
+        while blockcount > 0 :
+            blockcount -= len(self.nodes[0].generate(blockcount))
 
         self.nodes[0].sendtoaddress(address=self.nodes[1].getnewaddress(), amount=10, subtractfeefromamount=True)
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0 :
+            blockcount -= len(self.nodes[0].generate(blockcount))
         self.sync_all()
 
         self.nodes[0].sendtoaddress(address=self.nodes[0].getnewaddress(), amount=10, subtractfeefromamount=True)
         self.nodes[0].sendtoaddress(address=self.nodes[0].getnewaddress(), amount=10, subtractfeefromamount=False)
         self.nodes[1].sendtoaddress(address=self.nodes[0].getnewaddress(), amount=1, subtractfeefromamount=True)
         self.sync_all()
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount > 0 :
+            blockcount -= len(self.nodes[0].generate(blockcount))
 
         self.expected_stats = self.get_stats()
 

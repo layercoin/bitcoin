@@ -26,13 +26,16 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
         node0,node1,node2 = self.nodes
 
         # 50 LYC each, rest will be 25 LYC each
-        node0.generate(149)
+        # node0.generate(149)
+        blockcount = 193
+        while blockcount > 0:
+            blockcount -= len(node0.generate(blockcount))
         self.sync_all()
 
         self.moved = 0
         for self.nkeys in [3,5]:
             for self.nsigs in [2,3]:
-                for self.output_type in ["bech32", "p2sh-segwit", "legacy"]:
+                for self.output_type in ["bech32"]:     # "p2sh-segwit", "legacy"
                     self.get_keys()
                     self.do_multisig()
 
@@ -40,7 +43,10 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
 
     def checkbalances(self):
         node0,node1,node2 = self.nodes
-        node0.generate(100)
+        # node0.generate(100)
+        blockcount = 100
+        while blockcount > 0:
+            blockcount -= len(node0.generate(blockcount))
         self.sync_all()
 
         bal0 = node0.getbalance()
@@ -49,10 +55,10 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
 
         height = node0.getblockchaininfo()["blocks"]
         assert 150 < height < 350
-        total = 149*50 + (height-149-100)*25
+        total = 149*40 + (height-193-100)*20
         assert bal1 == 0
         assert bal2 == self.moved
-        assert bal0+bal1+bal2 == total
+        assert round(bal0+bal1+bal2) == total
 
     def do_multisig(self):
         node0,node1,node2 = self.nodes
@@ -61,7 +67,7 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
         madd = msig["address"]
         mredeem = msig["redeemScript"]
         if self.output_type == 'bech32':
-            assert madd[0:4] == "bcrt"  # actually a bech32 address
+            assert madd[0:4] == "lcrt"  # actually a bech32 address
 
         # compare against addmultisigaddress
         msigw = node1.addmultisigaddress(self.nsigs, self.pub, None, self.output_type)
@@ -81,7 +87,10 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
         value = tx["vout"][vout]["value"]
         prevtxs = [{"txid": txid, "vout": vout, "scriptPubKey": scriptPubKey, "redeemScript": mredeem, "amount": value}]
 
-        node0.generate(1)
+        # node0.generate(1)
+        blockcount = 1
+        while blockcount > 0:
+            blockcount -= len(node0.generate(blockcount))
 
         outval = value - decimal.Decimal("0.00001000")
         rawtx = node2.createrawtransaction([{"txid": txid, "vout": vout}], [{self.final: outval}])
@@ -91,7 +100,13 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
 
         self.moved += outval
         tx = node0.sendrawtransaction(rawtx3["hex"], True)
-        blk = node0.generate(1)[0]
+        # blk = node0.generate(1)[0]
+        blockcount = 1
+        while blockcount > 0:
+            newblk = node0.generate(blockcount)
+            blockcount -= len(newblk)
+            blk = newblk[0]
+
         assert tx in node0.getblock(blk)["tx"]
 
         txinfo = node0.getrawtransaction(tx, True, blk)
