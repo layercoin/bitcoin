@@ -78,7 +78,7 @@ class BlockchainTest(BitcoinTestFramework):
 
         keys = [
             'bestblockhash',
-            'bip9_softforks',
+            # 'bip9_softforks',
             'blocks',
             'chain',
             'chainwork',
@@ -88,7 +88,7 @@ class BlockchainTest(BitcoinTestFramework):
             'mediantime',
             'pruned',
             'size_on_disk',
-            'softforks',
+            # 'softforks',
             'verificationprogress',
             'warnings',
         ]
@@ -180,11 +180,11 @@ class BlockchainTest(BitcoinTestFramework):
         node = self.nodes[0]
         res = node.gettxoutsetinfo()
 
-        assert_equal(res['total_amount'], Decimal('8725.00000000'))
-        assert_equal(res['transactions'], 200)
+        assert_equal(res['total_amount'], Decimal('8775.00000000'))
+        assert_equal(res['transactions'], 201)
         assert_equal(res['height'], 200)
-        assert_equal(res['txouts'], 200)
-        assert_equal(res['bogosize'], 15000),
+        assert_equal(res['txouts'], 401)
+        assert_equal(res['bogosize'], 28872),
         assert_equal(res['bestblock'], node.getblockhash(200))
         size = res['disk_size']
         assert size > 6400
@@ -197,11 +197,11 @@ class BlockchainTest(BitcoinTestFramework):
         node.invalidateblock(b1hash)
 
         res2 = node.gettxoutsetinfo()
-        assert_equal(res2['transactions'], 0)
-        assert_equal(res2['total_amount'], Decimal('0'))
+        assert_equal(res2['transactions'], 1)
+        assert_equal(res2['total_amount'], Decimal('50'))
         assert_equal(res2['height'], 0)
-        assert_equal(res2['txouts'], 0)
-        assert_equal(res2['bogosize'], 0),
+        assert_equal(res2['txouts'], 1)
+        assert_equal(res2['bogosize'], 72),
         assert_equal(res2['bestblock'], node.getblockhash(0))
         assert_equal(len(res2['hash_serialized_2']), 64)
 
@@ -235,9 +235,9 @@ class BlockchainTest(BitcoinTestFramework):
         assert_is_hash_string(header['previousblockhash'])
         assert_is_hash_string(header['merkleroot'])
         assert_is_hash_string(header['bits'], length=None)
+        assert_is_hash_string(header['nonce'])
         assert isinstance(header['time'], int)
         assert isinstance(header['mediantime'], int)
-        assert isinstance(header['nonce'], int)
         assert isinstance(header['version'], int)
         assert isinstance(int(header['versionHex'], 16), int)
         assert isinstance(header['difficulty'], Decimal)

@@ -26,13 +26,13 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
         node0,node1,node2 = self.nodes
 
         # 50 LYC each, rest will be 25 LYC each
-        node0.generate(149)
+        node0.generate(193)
         self.sync_all()
 
         self.moved = 0
         for self.nkeys in [3,5]:
             for self.nsigs in [2,3]:
-                for self.output_type in ["bech32", "p2sh-segwit", "legacy"]:
+                for self.output_type in ["bech32"]:     # "p2sh-segwit", "legacy"
                     self.get_keys()
                     self.do_multisig()
 
@@ -49,10 +49,10 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
 
         height = node0.getblockchaininfo()["blocks"]
         assert 150 < height < 350
-        total = 149*50 + (height-149-100)*25
+        total = 149*40 + (height-193-100)*20
         assert bal1 == 0
         assert bal2 == self.moved
-        assert bal0+bal1+bal2 == total
+        assert round(bal0+bal1+bal2) == total
 
     def do_multisig(self):
         node0,node1,node2 = self.nodes
@@ -61,7 +61,7 @@ class RpcCreateMultiSigTest(BitcoinTestFramework):
         madd = msig["address"]
         mredeem = msig["redeemScript"]
         if self.output_type == 'bech32':
-            assert madd[0:4] == "bcrt"  # actually a bech32 address
+            assert madd[0:4] == "lcrt"  # actually a bech32 address
 
         # compare against addmultisigaddress
         msigw = node1.addmultisigaddress(self.nsigs, self.pub, None, self.output_type)

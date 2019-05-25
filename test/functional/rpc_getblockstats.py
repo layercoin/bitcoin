@@ -19,7 +19,7 @@ TESTSDIR = os.path.dirname(os.path.realpath(__file__))
 
 class GetblockstatsTest(BitcoinTestFramework):
 
-    start_height = 101
+    start_height = 145
     max_stat_pos = 2
     STATS_NEED_TXINDEX = [
         'avgfee',
@@ -53,7 +53,7 @@ class GetblockstatsTest(BitcoinTestFramework):
 
     def generate_test_data(self, filename):
         mocktime = time.time()
-        self.nodes[0].generate(101)
+        self.nodes[0].generate(145)
 
         self.nodes[0].sendtoaddress(address=self.nodes[1].getnewaddress(), amount=10, subtractfeefromamount=True)
         self.nodes[0].generate(1)

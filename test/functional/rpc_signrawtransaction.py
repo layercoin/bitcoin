@@ -37,7 +37,7 @@ class SignRawTransactionsTest(BitcoinTestFramework):
              'scriptPubKey': '76a914669b857c03a5ed269d5d85a1ffac9ed5d663072788ac'},
         ]
 
-        outputs = {'mpLQjfK79b7CCV4VMJWEWAj5Mpx8Up5zxB': 0.1}
+        outputs = {'lcrt1q6at4qsnefxydj0hqsqxmnu6nesudzhs82qpr2a': 0.1}
 
         rawTx = self.nodes[0].createrawtransaction(inputs, outputs)
         rawTxSigned = self.nodes[0].signrawtransactionwithkey(rawTx, privKeys, inputs)
@@ -85,7 +85,7 @@ class SignRawTransactionsTest(BitcoinTestFramework):
              'scriptPubKey': 'badbadbadbad'}
         ]
 
-        outputs = {'mpLQjfK79b7CCV4VMJWEWAj5Mpx8Up5zxB': 0.1}
+        outputs = {'lcrt1q6at4qsnefxydj0hqsqxmnu6nesudzhs82qpr2a': 0.1}
 
         rawTx = self.nodes[0].createrawtransaction(inputs, outputs)
 
@@ -151,19 +151,19 @@ class SignRawTransactionsTest(BitcoinTestFramework):
         # Create a new P2SH-P2WSH 1-of-1 multisig address:
         embedded_address = self.nodes[1].getaddressinfo(self.nodes[1].getnewaddress())
         embedded_privkey = self.nodes[1].dumpprivkey(embedded_address["address"])
-        p2sh_p2wsh_address = self.nodes[1].addmultisigaddress(1, [embedded_address["pubkey"]], "", "p2sh-segwit")
+        p2sh_p2wsh_address = self.nodes[1].addmultisigaddress(1, [embedded_address["pubkey"]], "", "bech32")
         # send transaction to P2SH-P2WSH 1-of-1 multisig address
-        self.nodes[0].generate(101)
-        self.nodes[0].sendtoaddress(p2sh_p2wsh_address["address"], 49.999)
+        self.nodes[0].generate(145)
+        self.nodes[0].sendtoaddress(p2sh_p2wsh_address["address"], 39.999)
         self.nodes[0].generate(1)
         self.sync_all()
         # Find the UTXO for the transaction node[1] should have received, check witnessScript matches
         unspent_output = self.nodes[1].listunspent(0, 999999, [p2sh_p2wsh_address["address"]])[0]
         assert_equal(unspent_output["witnessScript"], p2sh_p2wsh_address["redeemScript"])
         p2sh_redeemScript = CScript([OP_0, sha256(hex_str_to_bytes(p2sh_p2wsh_address["redeemScript"]))])
-        assert_equal(unspent_output["redeemScript"], bytes_to_hex_str(p2sh_redeemScript))
+        assert_equal(unspent_output["scriptPubKey"], bytes_to_hex_str(p2sh_redeemScript))
         # Now create and sign a transaction spending that output on node[0], which doesn't know the scripts or keys
-        spending_tx = self.nodes[0].createrawtransaction([unspent_output], {self.nodes[1].getnewaddress(): Decimal("49.998")})
+        spending_tx = self.nodes[0].createrawtransaction([unspent_output], {self.nodes[1].getnewaddress(): Decimal("39.998")})
         spending_tx_signed = self.nodes[0].signrawtransactionwithkey(spending_tx, [embedded_privkey], [unspent_output])
         # Check the signing completed successfully
         assert 'complete' in spending_tx_signed

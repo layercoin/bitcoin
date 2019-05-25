@@ -42,7 +42,11 @@ class RawTransactionsTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 3
-        self.extra_args = [["-addresstype=legacy", "-txindex"], ["-addresstype=legacy", "-txindex"], ["-addresstype=legacy", "-txindex"]]
+        self.extra_args = [
+            ["-txindex"],
+            ["-txindex"],
+            ["-txindex"],
+        ]
 
     def skip_test_if_missing_module(self):
         self.skip_if_no_wallet()
@@ -55,7 +59,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.log.info('prepare some coins for multiple *rawtransaction commands')
         self.nodes[2].generate(1)
         self.sync_all()
-        self.nodes[0].generate(101)
+        self.nodes[0].generate(145)
         self.sync_all()
         self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(),1.5)
         self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(),1.0)
@@ -64,9 +68,11 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.nodes[0].generate(5)
         self.sync_all()
 
-        self.log.info('Test getrawtransaction on genesis block coinbase returns an error')
+        self.log.info('Test getrawtransaction on genesis block coinbase returns no error')
         block = self.nodes[0].getblock(self.nodes[0].getblockhash(0))
-        assert_raises_rpc_error(-5, "The genesis block coinbase is not considered an ordinary transaction", self.nodes[0].getrawtransaction, block['merkleroot'])
+        # assert_raises_rpc_error(-5, "The genesis block coinbase is not considered an ordinary transaction", self.nodes[0].getrawtransaction, block['merkleroot'])
+        txGenesis = self.nodes[0].getrawtransaction(block['merkleroot'], True, block['hash'])
+        assert_equal(txGenesis['txid'], block['merkleroot'])
 
         self.log.info('Check parameter types and required parameters of createrawtransaction')
         # Test `createrawtransaction` required parameters
@@ -137,7 +143,7 @@ class RawTransactionsTest(BitcoinTestFramework):
             self.nodes[2].createrawtransaction(inputs=[{'txid': txid, 'vout': 9}], outputs=[{address: 99}, {address2: 99}, {'data': '99'}]),
         )
 
-        for type in ["bech32", "p2sh-segwit", "legacy"]:
+        for type in ["bech32"]:     # "p2sh-segwit", "legacy"
             addr = self.nodes[0].getnewaddress("", type)
             addrinfo = self.nodes[0].getaddressinfo(addr)
             pubkey = addrinfo["scriptPubKey"]
@@ -305,7 +311,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.sync_all()
         self.nodes[0].generate(1)
         self.sync_all()
-        assert_equal(self.nodes[0].getbalance(), bal+Decimal('50.00000000')+Decimal('2.19000000')) #block reward + tx
+        assert_equal(self.nodes[0].getbalance(), bal+Decimal('40.00000000')+Decimal('2.19000000')) #block reward + tx
 
         # 2of2 test for combining transactions
         bal = self.nodes[2].getbalance()
@@ -354,7 +360,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.sync_all()
         self.nodes[0].generate(1)
         self.sync_all()
-        assert_equal(self.nodes[0].getbalance(), bal+Decimal('50.00000000')+Decimal('2.19000000')) #block reward + tx
+        assert_equal(self.nodes[0].getbalance(), bal+Decimal('40.00000000')+Decimal('2.19000000')) #block reward + tx
 
         # decoderawtransaction tests
         # witness transaction
@@ -369,30 +375,30 @@ class RawTransactionsTest(BitcoinTestFramework):
 
         # getrawtransaction tests
         # 1. valid parameters - only supply txid
-        txHash = rawTx["hash"]
-        assert_equal(self.nodes[0].getrawtransaction(txHash), rawTxSigned['hex'])
+        txId = rawTx["txid"]
+        assert_equal(self.nodes[0].getrawtransaction(txId), rawTxSigned['hex'])
 
         # 2. valid parameters - supply txid and 0 for non-verbose
-        assert_equal(self.nodes[0].getrawtransaction(txHash, 0), rawTxSigned['hex'])
+        assert_equal(self.nodes[0].getrawtransaction(txId, 0), rawTxSigned['hex'])
 
         # 3. valid parameters - supply txid and False for non-verbose
-        assert_equal(self.nodes[0].getrawtransaction(txHash, False), rawTxSigned['hex'])
+        assert_equal(self.nodes[0].getrawtransaction(txId, False), rawTxSigned['hex'])
 
         # 4. valid parameters - supply txid and 1 for verbose.
         # We only check the "hex" field of the output so we don't need to update this test every time the output format changes.
-        assert_equal(self.nodes[0].getrawtransaction(txHash, 1)["hex"], rawTxSigned['hex'])
+        assert_equal(self.nodes[0].getrawtransaction(txId, 1)["hex"], rawTxSigned['hex'])
 
         # 5. valid parameters - supply txid and True for non-verbose
-        assert_equal(self.nodes[0].getrawtransaction(txHash, True)["hex"], rawTxSigned['hex'])
+        assert_equal(self.nodes[0].getrawtransaction(txId, True)["hex"], rawTxSigned['hex'])
 
         # 6. invalid parameters - supply txid and string "Flase"
-        assert_raises_rpc_error(-1, "not a boolean", self.nodes[0].getrawtransaction, txHash, "Flase")
+        assert_raises_rpc_error(-1, "not a boolean", self.nodes[0].getrawtransaction, txId, "Flase")
 
         # 7. invalid parameters - supply txid and empty array
-        assert_raises_rpc_error(-1, "not a boolean", self.nodes[0].getrawtransaction, txHash, [])
+        assert_raises_rpc_error(-1, "not a boolean", self.nodes[0].getrawtransaction, txId, [])
 
         # 8. invalid parameters - supply txid and empty dict
-        assert_raises_rpc_error(-1, "not a boolean", self.nodes[0].getrawtransaction, txHash, {})
+        assert_raises_rpc_error(-1, "not a boolean", self.nodes[0].getrawtransaction, txId, {})
 
         inputs  = [ {'txid' : "1d1d4e24ed99057e84c3f80fd8fbec79ed9e1acee37da269356ecea000000000", 'vout' : 1, 'sequence' : 1000}]
         outputs = { self.nodes[0].getnewaddress() : 1 }
