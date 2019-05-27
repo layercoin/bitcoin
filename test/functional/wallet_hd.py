@@ -44,7 +44,10 @@ class WalletHDTest(BitcoinTestFramework):
 
         # Derive some HD addresses and remember the last
         # Also send funds to each add
-        self.nodes[0].generate(101)
+        # self.nodes[0].generate(101)
+        blockcount = 145
+        while blockcount>0:
+            blockcount -= len(self.nodes[0].generate(blockcount))
         hd_add = None
         NUM_HD_ADDS = 10
         for i in range(NUM_HD_ADDS):
@@ -53,9 +56,16 @@ class WalletHDTest(BitcoinTestFramework):
             assert_equal(hd_info["hdkeypath"], "m/0'/0'/"+str(i)+"'")
             assert_equal(hd_info["hdseedid"], masterkeyid)
             self.nodes[0].sendtoaddress(hd_add, 1)
-            self.nodes[0].generate(1)
+            # self.nodes[0].generate(1)
+            blockcount = 1
+            while blockcount>0:
+                blockcount -= len(self.nodes[0].generate(blockcount))
+
         self.nodes[0].sendtoaddress(non_hd_add, 1)
-        self.nodes[0].generate(1)
+        # self.nodes[0].generate(1)
+        blockcount = 1
+        while blockcount>0:
+            blockcount -= len(self.nodes[0].generate(blockcount))
 
         # create an internal key (again)
         change_addr = self.nodes[1].getrawchangeaddress()
