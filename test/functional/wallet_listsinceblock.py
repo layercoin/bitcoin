@@ -16,7 +16,7 @@ class ListSinceBlockTest (BitcoinTestFramework):
         self.skip_if_no_wallet()
 
     def run_test(self):
-        self.nodes[2].generate(101)
+        self.nodes[2].generate(145)
         self.sync_all()
 
         self.test_no_blockhash()

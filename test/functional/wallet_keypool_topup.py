@@ -33,7 +33,7 @@ class KeypoolRestoreTest(BitcoinTestFramework):
     def run_test(self):
         wallet_path = os.path.join(self.nodes[1].datadir, "regtest", "wallets", "wallet.dat")
         wallet_backup_path = os.path.join(self.nodes[1].datadir, "wallet.bak")
-        self.nodes[0].generate(101)
+        self.nodes[0].generate(145)
 
         self.log.info("Make backup of wallet")
         self.stop_node(1)
@@ -44,6 +44,8 @@ class KeypoolRestoreTest(BitcoinTestFramework):
         connect_nodes_bi(self.nodes, 0, 3)
 
         for i, output_type in enumerate(["legacy", "p2sh-segwit", "bech32"]):
+            if i != 2 :
+                continue
 
             self.log.info("Generate keys for wallet with address type: {}".format(output_type))
             idx = i+1

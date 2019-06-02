@@ -11,7 +11,7 @@ from test_framework.util import (
     assert_raises_rpc_error,
 )
 
-RANDOM_COINBASE_ADDRESS = 'mneYUmWYsuk7kySiURxCi3AGxrAqZxLgPZ'
+RANDOM_COINBASE_ADDRESS = 'lcrt1q6at4qsnefxydj0hqsqxmnu6nesudzhs82qpr2a'
 
 def create_transactions(node, address, amt, fees):
     # Create and sign raw transactions from node to address for amt.
@@ -55,25 +55,25 @@ class WalletTest(BitcoinTestFramework):
         self.nodes[0].generate(1)
         self.sync_all()
         self.nodes[1].generate(1)
-        self.nodes[1].generatetoaddress(100, RANDOM_COINBASE_ADDRESS)
+        self.nodes[1].generatetoaddress(144, RANDOM_COINBASE_ADDRESS)
         self.sync_all()
 
-        assert_equal(self.nodes[0].getbalance(), 50)
-        assert_equal(self.nodes[1].getbalance(), 50)
+        assert_equal(self.nodes[0].getbalance(), 40)
+        assert_equal(self.nodes[1].getbalance(), 40)
 
         self.log.info("Test getbalance with different arguments")
-        assert_equal(self.nodes[0].getbalance("*"), 50)
-        assert_equal(self.nodes[0].getbalance("*", 1), 50)
-        assert_equal(self.nodes[0].getbalance("*", 1, True), 50)
-        assert_equal(self.nodes[0].getbalance(minconf=1), 50)
+        assert_equal(self.nodes[0].getbalance("*"), 40)
+        assert_equal(self.nodes[0].getbalance("*", 1), 40)
+        assert_equal(self.nodes[0].getbalance("*", 1, True), 40)
+        assert_equal(self.nodes[0].getbalance(minconf=1), 40)
 
-        # Send 40 LYC from 0 to 1 and 60 LYC from 1 to 0.
-        txs = create_transactions(self.nodes[0], self.nodes[1].getnewaddress(), 40, [Decimal('0.01')])
+        # Send 30 LYC from 0 to 1 and 50 LYC from 1 to 0.
+        txs = create_transactions(self.nodes[0], self.nodes[1].getnewaddress(), 30, [Decimal('0.01')])
         self.nodes[0].sendrawtransaction(txs[0]['hex'])
         self.nodes[1].sendrawtransaction(txs[0]['hex'])  # sending on both nodes is faster than waiting for propagation
 
         self.sync_all()
-        txs = create_transactions(self.nodes[1], self.nodes[0].getnewaddress(), 60, [Decimal('0.01'), Decimal('0.02')])
+        txs = create_transactions(self.nodes[1], self.nodes[0].getnewaddress(), 49, [Decimal('0.01'), Decimal('0.02')])
         self.nodes[1].sendrawtransaction(txs[0]['hex'])
         self.nodes[0].sendrawtransaction(txs[0]['hex'])  # sending on both nodes is faster than waiting for propagation
         self.sync_all()
@@ -85,16 +85,16 @@ class WalletTest(BitcoinTestFramework):
 
         # getbalance without any arguments includes unconfirmed transactions, but not untrusted transactions
         assert_equal(self.nodes[0].getbalance(), Decimal('9.99'))  # change from node 0's send
-        assert_equal(self.nodes[1].getbalance(), Decimal('29.99'))  # change from node 1's send
+        assert_equal(self.nodes[1].getbalance(), Decimal('20.99'))  # change from node 1's send
         # Same with minconf=0
         assert_equal(self.nodes[0].getbalance(minconf=0), Decimal('9.99'))
-        assert_equal(self.nodes[1].getbalance(minconf=0), Decimal('29.99'))
+        assert_equal(self.nodes[1].getbalance(minconf=0), Decimal('20.99'))
         # getbalance with a minconf incorrectly excludes coins that have been spent more recently than the minconf blocks ago
         # TODO: fix getbalance tracking of coin spentness depth
         assert_equal(self.nodes[0].getbalance(minconf=1), Decimal('0'))
         assert_equal(self.nodes[1].getbalance(minconf=1), Decimal('0'))
         # getunconfirmedbalance
-        assert_equal(self.nodes[0].getunconfirmedbalance(), Decimal('60'))  # output of node 1's spend
+        assert_equal(self.nodes[0].getunconfirmedbalance(), Decimal('49'))  # output of node 1's spend
         assert_equal(self.nodes[1].getunconfirmedbalance(), Decimal('0'))  # Doesn't include output of node 0's send since it was spent
 
         # Node 1 bumps the transaction fee and resends
@@ -103,8 +103,8 @@ class WalletTest(BitcoinTestFramework):
 
         self.log.info("Test getbalance and getunconfirmedbalance with conflicted unconfirmed inputs")
 
-        assert_equal(self.nodes[0].getwalletinfo()["unconfirmed_balance"], Decimal('60'))  # output of node 1's send
-        assert_equal(self.nodes[0].getunconfirmedbalance(), Decimal('60'))
+        assert_equal(self.nodes[0].getwalletinfo()["unconfirmed_balance"], Decimal('49'))  # output of node 1's send
+        assert_equal(self.nodes[0].getunconfirmedbalance(), Decimal('49'))
         assert_equal(self.nodes[1].getwalletinfo()["unconfirmed_balance"], Decimal('0'))  # Doesn't include output of node 0's send since it was spent
         assert_equal(self.nodes[1].getunconfirmedbalance(), Decimal('0'))
 
@@ -112,11 +112,11 @@ class WalletTest(BitcoinTestFramework):
         self.sync_all()
 
         # balances are correct after the transactions are confirmed
-        assert_equal(self.nodes[0].getbalance(), Decimal('69.99'))  # node 1's send plus change from node 0's send
-        assert_equal(self.nodes[1].getbalance(), Decimal('29.98'))  # change from node 0's send
+        assert_equal(self.nodes[0].getbalance(), Decimal('58.99'))  # node 1's send plus change from node 0's send
+        assert_equal(self.nodes[1].getbalance(), Decimal('20.98'))  # change from node 0's send
 
         # Send total balance away from node 1
-        txs = create_transactions(self.nodes[1], self.nodes[0].getnewaddress(), Decimal('29.97'), [Decimal('0.01')])
+        txs = create_transactions(self.nodes[1], self.nodes[0].getnewaddress(), Decimal('20.97'), [Decimal('0.01')])
         self.nodes[1].sendrawtransaction(txs[0]['hex'])
         self.nodes[1].generatetoaddress(2, RANDOM_COINBASE_ADDRESS)
         self.sync_all()
