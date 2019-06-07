@@ -17,6 +17,8 @@ static const unsigned int MAX_BLOCK_WEIGHT = 1000000;
 static const int64_t MAX_BLOCK_SIGOPS_COST = 20000;
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
 static const int COINBASE_MATURITY = 144;
+/** The maximum allowed size for scriptSig in vin of coinbase transaction, in bytes */
+static const unsigned int MAX_COINBASE_TX_VIN_SCRIPTSIG_SIZE = 20;
 
 static const int WITNESS_SCALE_FACTOR = 4;
 

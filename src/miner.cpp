@@ -432,7 +432,7 @@ void AddCoinbaseFlags(CBlock* pblock, const CBlockIndex* pindexPrev)
     unsigned int nHeight = pindexPrev->nHeight+1; // Height first in coinbase required for block.version=2
     CMutableTransaction txCoinbase(*pblock->vtx[0]);
     txCoinbase.vin[0].scriptSig = (CScript() << nHeight << OP_0) + COINBASE_FLAGS;
-    assert(txCoinbase.vin[0].scriptSig.size() <= 100);
+    assert(txCoinbase.vin[0].scriptSig.size() <= MAX_COINBASE_TX_VIN_SCRIPTSIG_SIZE);
 
     pblock->vtx[0] = MakeTransactionRef(std::move(txCoinbase));
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
