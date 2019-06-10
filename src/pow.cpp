@@ -8,6 +8,7 @@
 #include <arith_uint256.h>
 #include <chain.h>
 #include <primitives/block.h>
+#include <timedata.h>
 #include <uint256.h>
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
@@ -18,6 +19,12 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
     {
+        // difficulty adjustment when sudden hashrate loss
+        // set difficulty to powLimit when no block generate more than one day
+        uint32_t nOneDay = 24 * 60 * 60;
+        if ((GetAdjustedTime() - pindexLast->nTime) > nOneDay)
+            return nProofOfWorkLimit;
+
         if (params.fPowAllowMinDifficultyBlocks)
         {
             // Special difficulty rule for testnet:
