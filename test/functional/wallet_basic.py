@@ -414,7 +414,7 @@ class WalletTest(BitcoinTestFramework):
             # '-reindex',
             '-zapwallettxes=1',
             '-zapwallettxes=2',
-            '-salvagewallet',
+            # '-salvagewallet',
         ]
         chainlimit = 6
         for m in maintenance:

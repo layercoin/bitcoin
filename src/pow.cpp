@@ -8,12 +8,19 @@
 #include <arith_uint256.h>
 #include <chain.h>
 #include <primitives/block.h>
+#include <timedata.h>
 #include <uint256.h>
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     assert(pindexLast != nullptr);
     unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
+
+    // difficulty adjustment when sudden hashrate loss
+    // set difficulty to powLimit when no block generate more than one day
+    uint32_t nOneDay = 24 * 60 * 60;
+    if ((GetAdjustedTime() - pindexLast->nTime) > nOneDay)
+        return nProofOfWorkLimit;
 
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
