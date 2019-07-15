@@ -1486,7 +1486,7 @@ template <class T>
 bool GenericTransactionSignatureChecker<T>::VerifySignature(const std::vector<unsigned char>& vchSig, const CPubKey& pubkey, const uint256& sighash, SignatureType sigtype) const
 {
     switch (sigtype) {
-    case SignatureType::ECDSA: return pubkey.Verify(sighash, vchSig);
+    case SignatureType::ECDSA: return false; // pubkey.Verify(sighash, vchSig); // remove ECDSA signature
     case SignatureType::SCHNORR: return pubkey.VerifySchnorr(sighash, vchSig);
     }
     assert(false);
