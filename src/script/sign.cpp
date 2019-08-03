@@ -26,7 +26,7 @@ bool MutableTransactionSignatureCreator::CreateSig(const SigningProvider& provid
         return false;
 
     uint256 hash = SignatureHash(scriptCode, *txTo, nIn, nHashType, amount, sigversion);
-    if (!key.Sign(hash, vchSig))
+    if (!key.SignSchnorr(hash, vchSig))
         return false;
     vchSig.push_back((unsigned char)nHashType);
     return true;

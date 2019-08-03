@@ -40,7 +40,7 @@ public:
     {
         unsigned char st;
         switch (sigtype) {
-        case SignatureType::ECDSA: st = 'E'; break;
+        case SignatureType::ECDSA: // st = 'E'; break;
         case SignatureType::SCHNORR: st = 'S'; break;
         }
         CSHA256().Write(nonce.begin(), 32).Write(hash.begin(), 32).Write(&pubkey[0], pubkey.size()).Write(&st, 1).Write(&vchSig[0], vchSig.size()).Finalize(entry.begin());
