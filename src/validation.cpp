@@ -1946,20 +1946,30 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     //  not check genesis block
     if(pindex->nHeight != 0){
-        bool bFound = false;
-        CTxDestination dest = DecodeDestination(chainparams.GetFoundersRewardAddress(pindex->nHeight));
-        CScript scriptPubKey = GetScriptForDestination(dest);
+        bool bFoundDeveloper = false;
+        bool bFoundFlowMiner = false;
+        bool bFoundLayer2 = false;
+        CScript scriptPubKeyDeveloper = GetScriptForDestination(DecodeDestination(chainparams.GetDeveloperRewardAddress()));
+        CScript scriptPubKeyFlowMiner = GetScriptForDestination(DecodeDestination(chainparams.GetFlowMinerRewardAddress()));
+        CScript scriptPubKeyLayer2 = GetScriptForDestination(DecodeDestination(chainparams.GetLayer2RewardAddress()));
         for(unsigned int i = 0; i < block.vtx[0]->vout.size(); i++){
             const CTxOut &out = block.vtx[0]->vout[i];
-            if((out.scriptPubKey == scriptPubKey) && 
-                (out.nValue == (blockReward - int64_t(blockReward * 0.8)))){
-                bFound = true;
-                break;
+            if((out.scriptPubKey == scriptPubKeyDeveloper) && (out.nValue == int64_t(blockReward * 0.1))){
+                bFoundDeveloper = true;
+                continue;
+            }
+            if((out.scriptPubKey == scriptPubKeyFlowMiner) && (out.nValue == int64_t(blockReward * 0.3))){
+                bFoundFlowMiner = true;
+                continue;
+            }
+            if((out.scriptPubKey == scriptPubKeyLayer2) && (out.nValue == int64_t(blockReward * 0.3))){
+                bFoundLayer2 = true;
+                continue;
             }
         }
-        if(!bFound){
-            return state.DoS(100, error("%s: founders reward missing, height %d", __func__, pindex->nHeight), 
-                REJECT_INVALID, "bad-cb-founders-reward");
+        if(!bFoundDeveloper || !bFoundFlowMiner || !bFoundLayer2){
+            return state.DoS(100, error("%s: coinbase reward error, height %d", __func__, pindex->nHeight), 
+                REJECT_INVALID, "bad-cb-reward");
         }
     }
 

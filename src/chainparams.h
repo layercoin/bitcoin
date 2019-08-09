@@ -84,7 +84,9 @@ public:
     const std::vector<SeedSpec6>& FixedSeeds() const { return vFixedSeeds; }
     const CCheckpointData& Checkpoints() const { return checkpointData; }
     const ChainTxData& TxData() const { return chainTxData; }
-    const std::string& GetFoundersRewardAddress(int height) const { return vFoundersRewardAddress[height % vFoundersRewardAddress.size()]; }
+    const std::string& GetDeveloperRewardAddress() const { return vRewardAddress[0]; }
+    const std::string& GetFlowMinerRewardAddress() const { return vRewardAddress[1]; }
+    const std::string& GetLayer2RewardAddress() const { return vRewardAddress[2]; }
 protected:
     CChainParams() {}
 
@@ -106,7 +108,7 @@ protected:
     CCheckpointData checkpointData;
     ChainTxData chainTxData;
     bool m_fallback_fee_enabled;
-    std::vector<std::string> vFoundersRewardAddress;
+    std::vector<std::string> vRewardAddress;
 };
 
 /**

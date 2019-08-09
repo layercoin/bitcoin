@@ -152,13 +152,11 @@ public:
         /* disable fallback fee on mainnet */
         m_fallback_fee_enabled = false;
 
-        // Founders Reward Address
-        vFoundersRewardAddress = {
-            "lc1qkaetfn7fgadc4ea72aqmvsq9d35vkylagl5jps",
-            "lc1qspty2vw97nkjrhw7y0p6ky93d8xe9mxnc2q6ga",
-            "lc1qnr2u8tgv8hpht7qwpfl4qwt457ul6y547ragqx",
-            "lc1q4qv3xydwdpfhcp7r6k2rmwgand2z8snpc67z4x",
-            "lc1q2tndrfn7ftvnt0rhw98cwfycg0kn22qv0n24t4",
+        // Reward Address
+        vRewardAddress = {
+            "lc1qkaetfn7fgadc4ea72aqmvsq9d35vkylagl5jps",   // developer  10%
+            "lc1qspty2vw97nkjrhw7y0p6ky93d8xe9mxnc2q6ga",   // flow miner 30% 
+            "lc1qnr2u8tgv8hpht7qwpfl4qwt457ul6y547ragqx",   // layer2     30%
         };
     }
 };
@@ -239,10 +237,11 @@ public:
         /* enable fallback fee on testnet */
         m_fallback_fee_enabled = true;
 
-        // Founders Reward Address
-        vFoundersRewardAddress = {
-            "tl1qxl4qh8z0qcyxghp48lvcag6ptk36k66n04sx8q",
-            "tl1qvjesntdw7cvej854s0x0hrkl3jzw3kcp5779p0",
+        // Reward Address
+        vRewardAddress = {
+            "tl1qxl4qh8z0qcyxghp48lvcag6ptk36k66n04sx8q",   // developer  10%
+            "tl1qvjesntdw7cvej854s0x0hrkl3jzw3kcp5779p0",   // flow miner 30% 
+            "tl1qszult87zmc5q93dfd4u5wsrapugx878vjwehc3",   // layer2     30%
         };
     }
 };
@@ -319,10 +318,11 @@ public:
         /* enable fallback fee on regtest */
         m_fallback_fee_enabled = true;
 
-        // Founders Reward Address
-        vFoundersRewardAddress = {
-            "lcrt1q5myg5la9929d7xjp8tjlluaq2l3q29znqvez0r",
-            "lcrt1qnkvr4qg34thhprt6pcedxqsw0lurt9v8npkfke",
+        // Reward Address
+        vRewardAddress = {
+            "lcrt1q5myg5la9929d7xjp8tjlluaq2l3q29znqvez0r",   // developer  10%
+            "lcrt1qnkvr4qg34thhprt6pcedxqsw0lurt9v8npkfke",   // flow miner 30% 
+            "lcrt1qytunlf2yljtgjhsqrf77k7fcvmvuw0kjyw38sw",   // layer2     30%
         };
     }
 

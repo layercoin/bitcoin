@@ -142,12 +142,15 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     // block reward: miner 80%, founder = block reward - miner
     CAmount blockReward = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
-    coinbaseTx.vout.resize(2);
-    coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
-    coinbaseTx.vout[0].nValue = int64_t(blockReward * 0.8);
-    CTxDestination dest = DecodeDestination(chainparams.GetFoundersRewardAddress(nHeight));
-    coinbaseTx.vout[1].scriptPubKey = GetScriptForDestination(dest);
-    coinbaseTx.vout[1].nValue = blockReward - coinbaseTx.vout[0].nValue;
+    coinbaseTx.vout.resize(4);
+    coinbaseTx.vout[0].scriptPubKey = GetScriptForDestination(DecodeDestination(chainparams.GetDeveloperRewardAddress()));
+    coinbaseTx.vout[0].nValue = int64_t(blockReward * 0.1);
+    coinbaseTx.vout[1].scriptPubKey = GetScriptForDestination(DecodeDestination(chainparams.GetFlowMinerRewardAddress()));
+    coinbaseTx.vout[1].nValue = int64_t(blockReward * 0.3);
+    coinbaseTx.vout[2].scriptPubKey = GetScriptForDestination(DecodeDestination(chainparams.GetLayer2RewardAddress()));
+    coinbaseTx.vout[2].nValue = int64_t(blockReward * 0.3);
+    coinbaseTx.vout[3].scriptPubKey = scriptPubKeyIn;
+    coinbaseTx.vout[3].nValue = blockReward - coinbaseTx.vout[0].nValue - coinbaseTx.vout[1].nValue - coinbaseTx.vout[2].nValue;
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
     pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());
     pblocktemplate->vTxFees[0] = -nFees;
