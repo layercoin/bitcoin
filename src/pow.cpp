@@ -42,8 +42,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     assert(nHeightFirst >= 0);
     const CBlockIndex* pindexFirst = pindexLast->GetAncestor(nHeightFirst);
     assert(pindexFirst);
+    const CBlockIndex* pindexBegin = pindexFirst->pprev == nullptr ? pindexFirst : pindexFirst->pprev;
+    assert(pindexBegin);
 
-    return CalculateNextWorkRequired(pindexLast, pindexFirst->GetBlockTime(), params);
+    return CalculateNextWorkRequired(pindexLast, pindexBegin->GetBlockTime(), params);
 }
 
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params)
