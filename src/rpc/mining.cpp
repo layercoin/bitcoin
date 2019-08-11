@@ -100,17 +100,13 @@ static UniValue getnetworkhashps(const JSONRPCRequest& request)
 
 UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGenerate, uint64_t nMaxTries, bool keepScript)
 {
-    static const int nInnerLoopCount = 0x10000;
-    int nHeightEnd = 0;
     int nHeight = 0;
-
     {   // Don't keep cs_main locked
         LOCK(cs_main);
         nHeight = chainActive.Height();
-        nHeightEnd = nHeight+nGenerate;
     }
     UniValue blockHashes(UniValue::VARR);
-    while (nHeight < nHeightEnd && !ShutdownRequested())
+    while (!ShutdownRequested())
     {
         std::unique_ptr<CBlockTemplate> pblocktemplate(BlockAssembler(Params()).CreateNewBlock(coinbaseScript->reserveScript));
         if (!pblocktemplate.get())
@@ -120,14 +116,24 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
             LOCK(cs_main);
             AddCoinbaseFlags(pblock, chainActive.Tip());
         }
-        while (nMaxTries > 0 && UintToArith256(pblock->nNonce) < nInnerLoopCount && !CheckProofOfWork(pblock->GetHash(), pblock->nBits, Params().GetConsensus())) {
+        int64_t nCheckNewBlock = 100000; 
+        int nNewBlockHeight = nHeight;
+        while (!CheckProofOfWork(pblock->GetHash(), pblock->nBits, Params().GetConsensus())) {
+            if (nCheckNewBlock == 0) {
+                nCheckNewBlock = 100000; 
+                {   // Don't keep cs_main locked
+                    LOCK(cs_main);
+                    nNewBlockHeight = chainActive.Height();
+                }
+                if(nHeight != nNewBlockHeight){
+                    break;
+                }
+            }
             pblock->nNonce = ArithToUint256(UintToArith256(pblock->nNonce) + 1);
-            --nMaxTries;
+            --nCheckNewBlock;
         }
-        if (nMaxTries == 0) {
-            break;
-        }
-        if (UintToArith256(pblock->nNonce) == nInnerLoopCount) {
+        if(nHeight != nNewBlockHeight){
+            nHeight = nNewBlockHeight;
             continue;
         }
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
