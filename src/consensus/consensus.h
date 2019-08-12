@@ -31,6 +31,8 @@ static constexpr unsigned int LOCKTIME_MEDIAN_TIME_PAST = (1 << 1);
 
 /** genesis coin lock-in one year (52560 blocks) */
 static const int GENESIS_COIN_LOCKIN_BLOCK_HEIGHT = 52560;
+/** genesis block subsidy coin count (420000 2%) */
+static const int GENESIS_BLOCK_SUBSIDY_COIN_COUNT = 420000;
 
 
 #endif // BITCOIN_CONSENSUS_CONSENSUS_H

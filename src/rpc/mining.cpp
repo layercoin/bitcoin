@@ -31,6 +31,8 @@
 #include <memory>
 #include <stdint.h>
 
+#include <consensus/merkle.h>
+
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
  * or from the last difficulty change if 'lookup' is nonpositive.
@@ -98,8 +100,65 @@ static UniValue getnetworkhashps(const JSONRPCRequest& request)
     return GetNetworkHashPS(!request.params[0].isNull() ? request.params[0].get_int() : 120, !request.params[1].isNull() ? request.params[1].get_int() : -1);
 }
 
+static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, const CScript& genesisCoinbaseCommitmentScript, uint32_t nTime, uint256 nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+{
+    static const std::vector<unsigned char> nonce(32, 0x00);
+    unsigned int nHeight = 0;
+
+    CMutableTransaction txNew;
+    txNew.nVersion = 2;
+    txNew.vin.resize(1);
+    txNew.vout.resize(2);
+
+    txNew.vin[0].prevout.SetNull();
+    txNew.vin[0].scriptSig = CScript() << nHeight << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+    txNew.vin[0].scriptWitness.stack.resize(1);
+    txNew.vin[0].scriptWitness.stack[0] = nonce;
+
+    txNew.vout[0].nValue = genesisReward;
+    txNew.vout[0].scriptPubKey = genesisOutputScript;
+
+    txNew.vout[1].nValue = 0;
+    txNew.vout[1].scriptPubKey = genesisCoinbaseCommitmentScript;
+
+    CBlock genesis;
+    genesis.nTime    = nTime;
+    genesis.nBits    = nBits;
+    genesis.nNonce   = nNonce;
+    genesis.nVersion = nVersion;
+    genesis.vtx.push_back(MakeTransactionRef(std::move(txNew)));
+    genesis.hashPrevBlock.SetNull();
+    genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
+
+    return genesis;
+}
+
+static CBlock CreateGenesisBlock(uint32_t nTime, uint256 nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward, const char* outputScript)
+{
+    const char* pszTimestamp = "Never Give Up";
+    const CScript genesisOutputScript = CScript() << OP_0 << ParseHex(outputScript);
+    const CScript genesisCoinbaseCommitmentScript = CScript() << OP_RETURN << ParseHex("aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9");
+    return CreateGenesisBlock(pszTimestamp, genesisOutputScript, genesisCoinbaseCommitmentScript, nTime, nNonce, nBits, nVersion, genesisReward);
+}
+
 UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGenerate, uint64_t nMaxTries, bool keepScript)
 {
+
+    CBlock genesis = CreateGenesisBlock(1565695862, 
+            uint256S("0000000000000000000000000000000000000000000000000000000000000005"), 
+            0x1d00ffff, 0x20000000, 420000 * COIN,
+            "faa1133ed40545e843657512b867b17838fd5218");
+
+    while (!CheckProofOfWork(genesis.GetHash(), genesis.nBits, Params().GetConsensus())) {
+        genesis.nNonce = ArithToUint256(UintToArith256(genesis.nNonce) + 1);
+    }
+
+    LogPrintf("nNonce = %s\n", genesis.nNonce.ToString());
+    LogPrintf("hashGenesisBlock = %s\n", genesis.GetHash().ToString());
+    LogPrintf("hashMerkleRoot = %s\n", genesis.hashMerkleRoot.ToString());
+
+    return true;
+
     static const int nInnerLoopCount = 0x10000;
     int nHeightEnd = 0;
     int nHeight = 0;
