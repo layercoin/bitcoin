@@ -609,6 +609,14 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         return state.Invalid(false, REJECT_DUPLICATE, "txn-already-in-mempool");
     }
 
+    // genesis coin lock-in one year
+    for (const CTxIn &txin : tx.vin){
+        if((txin.prevout.hash == chainparams.GetConsensus().hashGenesisBlockTx) 
+            && (chainActive.Height() < GENESIS_COIN_LOCKIN_BLOCK_HEIGHT)){
+            return state.Invalid(false, REJECT_INVALID, "txns-genesis-coin-lockin");                
+        }
+    }
+
     // Check for conflicts with in-memory transactions
     std::set<uint256> setConflicts;
     for (const CTxIn &txin : tx.vin)

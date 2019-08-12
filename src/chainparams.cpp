@@ -109,9 +109,10 @@ public:
 
         genesis = CreateGenesisBlock(1558350039, 
             uint256S("0000000000000000000000000000000000000000000000000000000034ff2cb8"), 
-            0x1d00ffff, 0x20000000, 50 * COIN,
+            0x1d00ffff, 0x20000000, 50 * COIN,  //  420000 2%
             "b1a5d64a0eb9f43be7a3239759c7e1bdccd63831");
         consensus.hashGenesisBlock = genesis.GetHash();
+        consensus.hashGenesisBlockTx = genesis.vtx[0]->GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x00000000ed7c3517b90c20cdb22ceb7176a522f652ba2c4c519c6c9ec2ef1c39"));
         assert(genesis.hashMerkleRoot == uint256S("0x40bc6a163cf3c3f4f7b302efc4e670de8cd4f124d0bc8b5ba4e7fe210dc86044"));
 
@@ -198,6 +199,7 @@ public:
             0x1f07ffff, 0x20000000, 50 * COIN,
             "db2e1536cb0d78bba2b5ad7bb00db43efc1d2d0e");
         consensus.hashGenesisBlock = genesis.GetHash();
+        consensus.hashGenesisBlockTx = genesis.vtx[0]->GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x0002bdb81bf01a43d3a3789f0c95554de926704aa8ddd7a2761de183dd67027b"));
         assert(genesis.hashMerkleRoot == uint256S("0xff7bf96e1944e3bbbdfff4c2efbdffbdb940c27fb07605049e4d2189eaea49ee"));
 
@@ -285,6 +287,7 @@ public:
             0x207fffff, 0x20000000, 50 * COIN,
             "22f93fa544fc96895e001a7deb793866d9c73ed2");
         consensus.hashGenesisBlock = genesis.GetHash();
+        consensus.hashGenesisBlockTx = genesis.vtx[0]->GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x797ea6ae89f48d7a1e2850c088ace38cbdd3f5cf617921c3fc2b5fd67018bf12"));
         assert(genesis.hashMerkleRoot == uint256S("0x36a15cbaab2246e0810960b32f29bb7503a4012e4cb3ae541cb66dcb114da6e6"));
 

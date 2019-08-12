@@ -29,4 +29,8 @@ static constexpr unsigned int LOCKTIME_VERIFY_SEQUENCE = (1 << 0);
 /** Use GetMedianTimePast() instead of nTime for end point timestamp. */
 static constexpr unsigned int LOCKTIME_MEDIAN_TIME_PAST = (1 << 1);
 
+/** genesis coin lock-in one year (52560 blocks) */
+static const int GENESIS_COIN_LOCKIN_BLOCK_HEIGHT = 52560;
+
+
 #endif // BITCOIN_CONSENSUS_CONSENSUS_H
