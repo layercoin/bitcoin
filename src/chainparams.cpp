@@ -6,6 +6,7 @@
 #include <chainparams.h>
 
 #include <chainparamsseeds.h>
+#include <consensus/consensus.h>
 #include <consensus/merkle.h>
 #include <tinyformat.h>
 #include <util/system.h>
@@ -55,16 +56,16 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  * transaction cannot be spent since it did not originally exist in the
  * database.
  *
- * CBlock(hash=00000000ed7c35, ver=0x20000000, hashPrevBlock=00000000000000, hashMerkleRoot=40bc6a, nTime=1558350039, nBits=1d00ffff, nNonce=uint256S("34ff2cb8"), vtx=1)
- *   CTransaction(hash=40bc6a, ver=2, vin.size=1, vout.size=1, nLockTime=0)
- *     CTxIn(COutPoint(000000, -1), coinbase 00010414416e797468696e6720697320706f737369626c65)
- *     CTxOut(nValue=50.00000000, scriptPubKey=0014b1a5d64a0eb9f43be7a3239759c7e1bdccd63831)
+ * CBlock(hash=00000000cf908c, ver=0x20000000, hashPrevBlock=00000000000000, hashMerkleRoot=996a41, nTime=1565695862, nBits=1d00ffff, nNonce=uint256S("01ef65e1ee"), vtx=1)
+ *   CTransaction(hash=56ee35, ver=2, vin.size=1, vout.size=1, nLockTime=0)
+ *     CTxIn(COutPoint(000000, -1), coinbase 0001040d4e657665722047697665205570)
+ *     CTxOut(nValue=420000.00000000, scriptPubKey=0014faa1133ed40545e843657512b867b17838fd5218)
  *     CTxOut(nValue=0, CoinbaseCommitment=e2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9)
- *   vMerkleTree: 40bc6a
+ *   vMerkleTree: 996a41
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint256 nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward, const char* outputScript)
 {
-    const char* pszTimestamp = "Anything is possible";
+    const char* pszTimestamp = "Never Give Up";
     const CScript genesisOutputScript = CScript() << OP_0 << ParseHex(outputScript);
     const CScript genesisCoinbaseCommitmentScript = CScript() << OP_RETURN << ParseHex("aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9");
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, genesisCoinbaseCommitmentScript, nTime, nNonce, nBits, nVersion, genesisReward);
@@ -107,14 +108,14 @@ public:
         m_assumed_blockchain_size = 240;
         m_assumed_chain_state_size = 3;
 
-        genesis = CreateGenesisBlock(1558350039, 
-            uint256S("0000000000000000000000000000000000000000000000000000000034ff2cb8"), 
-            0x1d00ffff, 0x20000000, 50 * COIN,  //  420000 2%
-            "b1a5d64a0eb9f43be7a3239759c7e1bdccd63831");
+        genesis = CreateGenesisBlock(1565695862, 
+            uint256S("00000000000000000000000000000000000000000000000000000001ef65e1ee"), 
+            0x1d00ffff, 0x20000000, GENESIS_BLOCK_SUBSIDY_COIN_COUNT * COIN, 
+            "faa1133ed40545e843657512b867b17838fd5218");
         consensus.hashGenesisBlock = genesis.GetHash();
         consensus.hashGenesisBlockTx = genesis.vtx[0]->GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000000ed7c3517b90c20cdb22ceb7176a522f652ba2c4c519c6c9ec2ef1c39"));
-        assert(genesis.hashMerkleRoot == uint256S("0x40bc6a163cf3c3f4f7b302efc4e670de8cd4f124d0bc8b5ba4e7fe210dc86044"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000000cf908c47b86800595aab94cd8b5d04b953905c39f3e73e2de3ae2098"));
+        assert(genesis.hashMerkleRoot == uint256S("0x996a4102400c02ea12a6d65ca2c707089ccea4019847030e0c8ba42c097c039b"));
 
         // Note that of those which support the service bits prefix, most only support a subset of
         // possible options.
@@ -155,9 +156,9 @@ public:
 
         // Reward Address
         vRewardAddress = {
-            "lc1qkaetfn7fgadc4ea72aqmvsq9d35vkylagl5jps",   // developer  10%
-            "lc1qspty2vw97nkjrhw7y0p6ky93d8xe9mxnc2q6ga",   // flow miner 30% 
-            "lc1qnr2u8tgv8hpht7qwpfl4qwt457ul6y547ragqx",   // layer2     30%
+            "lc1qrn97xjynnhc9xvssmyk784luls9hn4xfzsxpk3",   // developer  10%
+            "lc1qtfg562txj9xtay7q6a62vd8vlzzndhxdgsem9q",   // flow miner 30% 
+            "lc1qlrty5ahr5wjxyv3dkhy6ffxm0pf7geffn89r24",   // layer2     30%
         };
     }
 };
@@ -194,14 +195,14 @@ public:
         m_assumed_blockchain_size = 30;
         m_assumed_chain_state_size = 2;
 
-        genesis = CreateGenesisBlock(1558078848, 
-            uint256S("0000000000000000000000000000000000000000000000000000000000000142"), 
-            0x1f07ffff, 0x20000000, 50 * COIN,
+        genesis = CreateGenesisBlock(1565695657, 
+            uint256S("00000000000000000000000000000000000000000000000000000000000002a2"), 
+            0x1f07ffff, 0x20000000, GENESIS_BLOCK_SUBSIDY_COIN_COUNT * COIN,
             "db2e1536cb0d78bba2b5ad7bb00db43efc1d2d0e");
         consensus.hashGenesisBlock = genesis.GetHash();
         consensus.hashGenesisBlockTx = genesis.vtx[0]->GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0002bdb81bf01a43d3a3789f0c95554de926704aa8ddd7a2761de183dd67027b"));
-        assert(genesis.hashMerkleRoot == uint256S("0xff7bf96e1944e3bbbdfff4c2efbdffbdb940c27fb07605049e4d2189eaea49ee"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0007ab882520224dbdec12839253a987c76673f4c3743c81432b13f9fd7d4678"));
+        assert(genesis.hashMerkleRoot == uint256S("0xfc0a0f445860e268a2081fffdc59d07d571d253106cd83bfc8bdf9a59c44966e"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -282,14 +283,14 @@ public:
 
         UpdateVersionBitsParametersFromArgs(args);
 
-        genesis = CreateGenesisBlock(1559125081, 
-            uint256S("0000000000000000000000000000000000000000000000000000000000000005"), 
-            0x207fffff, 0x20000000, 50 * COIN,
+        genesis = CreateGenesisBlock(1565691010, 
+            uint256S("0000000000000000000000000000000000000000000000000000000000000006"), 
+            0x207fffff, 0x20000000, GENESIS_BLOCK_SUBSIDY_COIN_COUNT * COIN,
             "22f93fa544fc96895e001a7deb793866d9c73ed2");
         consensus.hashGenesisBlock = genesis.GetHash();
         consensus.hashGenesisBlockTx = genesis.vtx[0]->GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x797ea6ae89f48d7a1e2850c088ace38cbdd3f5cf617921c3fc2b5fd67018bf12"));
-        assert(genesis.hashMerkleRoot == uint256S("0x36a15cbaab2246e0810960b32f29bb7503a4012e4cb3ae541cb66dcb114da6e6"));
+        assert(consensus.hashGenesisBlock == uint256S("0x7e303db103a22166b08ec3d836db07c963ddbac438365cabaadd0f6a1e892ec3"));
+        assert(genesis.hashMerkleRoot == uint256S("0x57f22ee4629684ea8ae9e2015c46d571c14fe6a414c0d316415f29af50232beb"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
@@ -325,7 +326,7 @@ public:
         vRewardAddress = {
             "lcrt1q5myg5la9929d7xjp8tjlluaq2l3q29znqvez0r",   // developer  10%
             "lcrt1qnkvr4qg34thhprt6pcedxqsw0lurt9v8npkfke",   // flow miner 30% 
-            "lcrt1qytunlf2yljtgjhsqrf77k7fcvmvuw0kjyw38sw",   // layer2     30%
+            "lcrt1qkuggeqxqnvz5c30jmf0pc8ev2w9he75ynaqey0",   // layer2     30%
         };
     }
 
